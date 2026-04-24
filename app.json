@@ -1,5 +1,9 @@
 {
   "expo": {
+    "scheme": "lamoapp",
+    "experiments": {
+    "typedRoutes": true
+    },
     "name": "lamo-app",
     "slug": "lamo-app",
     "version": "1.0.0",
@@ -24,6 +28,9 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "expo-router"
+    ]
   }
 }
