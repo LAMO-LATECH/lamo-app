@@ -3,8 +3,8 @@ export const Colors = {
     text: "#222629",
     background: "#fbf8f5",
     primary: "#d9653b",
-    secondary: "#FF6A2B",
+    secondary: "#ff6a2b",
     accent: "#e2a948",
-    inactive: "#999",
+    inactive: "#999999",
   },
 };

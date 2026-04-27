@@ -10,6 +10,7 @@ import Animated, {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useEffect } from "react";
 import { Colors } from "../constants/Color";
+import { spacing, radius, iconSize, typography } from "../constants/Tokens";
 
 const ACTIVE_COLOR = Colors.light.primary;
 const INACTIVE_COLOR = Colors.light.inactive;
@@ -60,7 +61,7 @@ function TabItem({ route, isFocused, onPress, onLongPress }) {
     >
       <Animated.View style={animatedStyle}>
         <Icon
-          size={26}
+          size={iconSize.md}
           weight={isFocused ? "fill" : "duotone"}
           color={isFocused ? ACTIVE_COLOR : INACTIVE_COLOR}
         />
@@ -76,7 +77,9 @@ export default function TabBar({ state, descriptors, navigation }) {
   const insets = useSafeAreaInsets();
 
   return (
-    <View style={[styles.container, { paddingBottom: insets.bottom || 12 }]}>
+    <View
+      style={[styles.container, { paddingBottom: insets.bottom || spacing.md }]}
+    >
       {state.routes.map((route, index) => {
         const isFocused = state.index === index;
 
@@ -113,9 +116,9 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     backgroundColor: BG_COLOR,
-    paddingTop: 10,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    paddingTop: spacing.md,
+    borderTopLeftRadius: radius.md,
+    borderTopRightRadius: radius.md,
   },
   tabItem: {
     flex: 1,
@@ -124,7 +127,6 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   label: {
-    fontSize: 12,
-    fontWeight: "600",
+    ...typography.caption,
   },
 });
