@@ -1,57 +1,70 @@
-import { View, Image, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
-  withSequence,
+  withDelay,
   runOnJS,
   Easing,
+  interpolateColor,
 } from "react-native-reanimated";
 import { useEffect } from "react";
 import { Colors } from "../constants/Color";
 
 const AnimatedSplash = ({ onFinish }) => {
-  const scale = useSharedValue(0.3);
+  const scale = useSharedValue(1);
   const opacity = useSharedValue(0);
+  const bgProgress = useSharedValue(0);
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
     opacity: opacity.value,
   }));
 
+  const containerStyle = useAnimatedStyle(() => ({
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: interpolateColor(
+      bgProgress.value,
+      [0, 1],
+      [Colors.light.primary, Colors.light.background],
+    ),
+  }));
+
   useEffect(() => {
-    opacity.value = withSequence(
-      withTiming(1, { duration: 600, easing: Easing.out(Easing.ease) }),
-      withTiming(1, { duration: 600 }), // hold
-      withTiming(0, { duration: 400 }, (finished) => {
-        if (finished) runOnJS(onFinish)();
-      }),
+    opacity.value = withTiming(1, {
+      duration: 500,
+      easing: Easing.out(Easing.ease),
+    });
+    scale.value = withDelay(
+      1000,
+      withTiming(
+        15,
+        { duration: 600, easing: Easing.in(Easing.ease) },
+        (finished) => {
+          if (finished) runOnJS(onFinish)();
+        },
+      ),
     );
-    scale.value = withSequence(
-      withTiming(1, { duration: 600, easing: Easing.out(Easing.back(1.5)) }),
-      withTiming(1, { duration: 600 }),
-      withTiming(1.1, { duration: 400 }),
+    bgProgress.value = withDelay(
+      1000,
+      withTiming(1, { duration: 600, easing: Easing.in(Easing.ease) }),
     );
   }, []);
 
   return (
-    <View style={styles.container}>
+    <Animated.View style={containerStyle}>
       <Animated.Image
         source={require("../assets/splash-icon.png")}
         style={[styles.logo, animatedStyle]}
         resizeMode="contain"
       />
-    </View>
+    </Animated.View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.light.primary,
-    alignItems: "center",
-    justifyContent: "center",
-  },
   logo: {
     width: 350,
     height: 350,
