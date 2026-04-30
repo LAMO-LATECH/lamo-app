@@ -22,3 +22,9 @@ export function updatePreferences(updates) {
     body: updates,
   });
 }
+
+export function deleteAccount() {
+  return apiRequest(ENDPOINTS.me, {
+    method: "DELETE",
+  });
+}
