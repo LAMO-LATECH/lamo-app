@@ -1,12 +1,18 @@
 import{View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {router} from 'expo-router';
+import LottieView from 'lottie-react-native';
 import { Colors } from '../../constants/Color';
 
 export default function GetStarted(){
     return(
         <View style={styles.container}>
             <View style={styles.animationContainer}>
-            <Text style={styles.animationPlaceholder}>Car Animation here</Text>
+            <LottieView
+                source={{ uri: 'https://lottie.host/1ab1f0a9-dd45-4e5d-bf58-6d02c0bf1030/q8i8RxzIuV.lottie' }}
+                autoPlay
+                loop
+                style={styles.animation}
+            />
         </View>
 
         <Text style={styles.subtitle}>
@@ -52,10 +58,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginBottom: 30,
     },
-    animationPlaceholder:{
-        color:Colors.light.text,
-        opacity: 0.5,
-        fontSize:16,
+    animation:{
+        width: '100%',
+        height: '100%',
     },
     subtitle:{
         fontSize:14,
