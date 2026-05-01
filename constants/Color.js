@@ -6,5 +6,8 @@ export const Colors = {
     secondary: "#ff6a2b",
     accent: "#e2a948",
     inactive: "#999999",
+    surface: "#ffffff",
+    surfaceDark: "#2a2a2a",
+    border: "#e8e4e0",
   },
 };

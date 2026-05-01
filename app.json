@@ -17,14 +17,26 @@
       "backgroundColor": "#d9653b"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Lamo uses your location to show routes to your destinations.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Lamo uses your location to show routes to your destinations."
+      },
+      "bundleIdentifier": "com.ciddy0.lamoapp"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#d9653b"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION"
+      ],
+      "package": "com.ciddy0.lamoapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -32,7 +44,8 @@
     "plugins": [
       "expo-router",
       "expo-font",
-      "expo-web-browser"
+      "expo-web-browser",
+      "@rnmapbox/maps"
     ]
   }
 }
