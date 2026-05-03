@@ -1,4 +1,4 @@
-import{View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import{View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import {router} from 'expo-router';
 import LottieView from 'lottie-react-native';
 import { Colors } from '../../constants/Color';
@@ -7,6 +7,14 @@ export default function GetStarted(){
     return(
         <View style={styles.container}>
             <View style={styles.animationContainer}>
+            <Image
+                source={require('../../assets/palm_tree1.png')}
+                style={styles.palmLeft}
+            />
+            <Image
+                source={require('../../assets/palm_tree2.png')}
+                style={styles.palmRight}
+            />
             <LottieView
                 source={{ uri: 'https://lottie.host/1ab1f0a9-dd45-4e5d-bf58-6d02c0bf1030/q8i8RxzIuV.lottie' }}
                 autoPlay
@@ -52,12 +60,40 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
     },
     animationContainer:{
+        width: 320,
+        height: 240,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 30,
+        marginTop: 20,
+        position: 'relative',
+    },
+
+    palmLeft:{
+        position: 'absolute',
+        top: 2,
+        left: 20,
+        width:110,
+        transform: [{ rotate: '-25deg' }],
+        zIndex: 0,
+    },
+    palmRight:{
+        position: 'absolute',
+        top: 10,
+        right: 10,
+        width: 125,
+        transform: [{ rotate: '20deg' }],
+        zIndex: 0,
+    },
+
+    lottieWrapper:{
         width: 220,
         height: 220,
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom: 30,
+        zIndex:2, 
     },
+
     animation:{
         width: '100%',
         height: '100%',
@@ -78,7 +114,7 @@ const styles = StyleSheet.create({
         color: Colors.light.text,
         textAlign: 'center',
         marginBottom: 28,
-        lineHeight: 40,
+        lineHeight: 42,
     },
     accent:{
         color: Colors.light.accent,
