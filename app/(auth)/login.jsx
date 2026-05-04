@@ -1,12 +1,142 @@
-import { StyleSheet, Text, View } from "react-native";
-import { Link } from "expo-router";
-const Login = () => {
-  return (
-    <View>
-      <Text>Login</Text>
-    </View>
-  );
-};
-export default Login;
+import{View, Text, StyleSheet, TextInput, TouchableOpacity,} from 'react-native';
+import {router} from 'expo-router';
+import { Colors } from '../../constants/Color';
 
-const styles = StyleSheet.create({});
+export default function Login(){
+    return(
+        <View style={styles.container}>
+            <Text style={styles.title}>Welcome Back</Text>
+            <Text style={styles.subtitle}>Sign in to keep earning <Text style={styles.accent}>rewards</Text> while helping LA move smarter.</Text>
+
+            <View style={styles.form}>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Email address"
+                    placeholderTextColor={Colors.light.inactive}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                />
+                <TextInput
+                    style={styles.input}
+                    placeholder="Password"
+                    placeholderTextColor={Colors.light.inactive}
+                    secureTextEntry
+                />
+            </View>
+
+            <TouchableOpacity style={styles.primaryButton}>
+                <Text style={styles.primaryButtonText}>Log In</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.googleButton}>
+                <Text style={styles.googleButtonText}>Log In with Google</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={()=> router.push('/signup')}>
+              <Text style={styles.linkText}>
+                Don't have an account?{" "}
+                <Text style={styles.linkAccent}>Sign Up</Text>
+              </Text>
+            </TouchableOpacity>
+        </View>
+    );
+  }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: Colors.light.background,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 24,
+  },
+
+  title: {
+    fontSize: 32,
+    fontFamily: "PoppinsBold",
+    color: Colors.light.text,
+    textAlign: "center",
+    lineHeight: 40,
+    marginBottom: 8,
+  },
+
+  subtitle: {
+    fontSize: 14,
+    fontFamily: "PoppinsRegular",
+    color: Colors.light.text,
+    opacity: 0.7,
+    textAlign: "center",
+    lineHeight: 20,
+    marginBottom: 36,
+    maxWidth: 260,
+  },
+
+  accent: {
+    color: Colors.light.accent,
+    fontFamily: "PoppinsSemiBold",
+  },
+
+  form: {
+    width: "100%",
+  },
+
+  input: {
+    width: "100%",
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#E8E1DA",
+    borderRadius: 18,
+    paddingVertical: 16,
+    paddingHorizontal: 18,
+    fontSize: 15,
+    fontFamily: "PoppinsRegular",
+    color: Colors.light.text,
+    marginBottom: 14,
+  },
+
+  primaryButton: {
+    width: "100%",
+    backgroundColor: Colors.light.primary,
+    paddingVertical: 18,
+    borderRadius: 20,
+    alignItems: "center",
+    marginTop: 8,
+    marginBottom: 14,
+  },
+
+  primaryButtonText: {
+    fontSize: 17,
+    fontFamily: "PoppinsSemiBold",
+    color: Colors.light.background,
+  },
+
+  googleButton: {
+    width: "100%",
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#E8E1DA",
+    paddingVertical: 16,
+    borderRadius: 20,
+    alignItems: "center",
+    marginBottom: 22,
+  },
+
+  googleButtonText: {
+    fontSize: 15,
+    fontFamily: "PoppinsSemiBold",
+    color: Colors.light.text,
+  },
+
+  linkText: {
+    textAlign: "center",
+    fontSize: 15,
+    fontFamily: "PoppinsRegular",
+    color: Colors.light.text,
+  },
+
+  linkAccent: {
+    fontFamily: "PoppinsSemiBold",
+    color: Colors.light.primary,
+  },
+});
+    
