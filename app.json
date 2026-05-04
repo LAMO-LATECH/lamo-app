@@ -17,7 +17,8 @@
       "backgroundColor": "#d9653b"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.anonymous.lamo-app"
     },
     "android": {
       "adaptiveIcon": {
