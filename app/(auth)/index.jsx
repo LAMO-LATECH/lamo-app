@@ -2,8 +2,16 @@ import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { router } from "expo-router";
 import LottieView from "lottie-react-native";
 import { Colors } from "../../constants/Color";
+import {useState} from "react";
+import LegalModal from "../../components/LegalModal";
 
 export default function GetStarted() {
+  const [legalVisible, setLegalVisible]=useState(false);
+  const [legalType, setLegalType]=useState("terms");
+  const openLegal = (type) =>{
+    setLegalType(type);
+    setLegalVisible(true);
+  }
   return (
     <View style={styles.container}>
       <View style={styles.animationContainer}>
@@ -35,8 +43,18 @@ export default function GetStarted() {
       </Text>
 
       <Text style={styles.terms}>
-        By continuing, you agree to our Terms and Privacy Policy
+        By continuing, you agree to our {" "}
+        <Text style={styles.legalLink} onPress={() => openLegal("terms")}>
+        Terms
+        </Text>
+        
+        {" "}and{" "}
+
+        <Text style={styles.legalLink} onPress={() => openLegal("privacy")}>
+        Privacy Policy
+        </Text>
       </Text>
+      <LegalModal visible={legalVisible} type={legalType} onClose={() => setLegalVisible(false)} />
 
       <TouchableOpacity
         style={styles.primaryButton}
@@ -148,5 +166,9 @@ const styles = StyleSheet.create({
     fontFamily: "PoppinsSemiBold",
     color: Colors.light.text,
     fontSize: 17,
+  },
+  legalLink:{
+    color:Colors.light.primary,
+    fontFamily:"PoppinsSemiBold",
   },
 });
