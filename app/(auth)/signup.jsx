@@ -1,17 +1,52 @@
-import{View, Text, StyleSheet, TextInput, TouchableOpacity,} from 'react-native';
-import {router} from 'expo-router';
-import { Colors } from '../../constants/Color';
+import { useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+  ActivityIndicator,
+} from "react-native";
+import { router } from "expo-router";
+import { Colors } from "../../constants/Color";
+import { useAuth } from "../../contexts/AuthContext";
 
-export default function SignUp(){
-  return(
+export default function SignUp() {
+  const { signup } = useAuth();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSignUp = async () => {
+    if (!email || !password || !confirmPassword) {
+      Alert.alert("Error", "Please fill in all fields.");
+      return;
+    }
+    if (password !== confirmPassword) {
+      Alert.alert("Error", "Passwords do not match.");
+      return;
+    }
+    setLoading(true);
+    try {
+      await signup(email, password);
+      router.replace("/(tabs)");
+    } catch (err) {
+      Alert.alert("Sign Up Failed", err?.message || "Something went wrong.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
     <View style={styles.container}>
       <Text style={styles.title}>Create your account</Text>
 
       <Text style={styles.subtitle}>
-        Join Angelenos in tackling{" "}
-        <Text style={styles.accent}>congestion</Text>
+        Join Angelenos in tackling <Text style={styles.accent}>congestion</Text>
       </Text>
-      
+
       <View style={styles.form}>
         <TextInput
           style={styles.input}
@@ -19,6 +54,8 @@ export default function SignUp(){
           placeholderTextColor={Colors.light.inactive}
           autoCapitalize="none"
           keyboardType="email-address"
+          value={email}
+          onChangeText={setEmail}
         />
 
         <TextInput
@@ -26,6 +63,8 @@ export default function SignUp(){
           placeholder="Password"
           placeholderTextColor={Colors.light.inactive}
           secureTextEntry
+          value={password}
+          onChangeText={setPassword}
         />
 
         <TextInput
@@ -33,11 +72,21 @@ export default function SignUp(){
           placeholder="Confirm Password"
           placeholderTextColor={Colors.light.inactive}
           secureTextEntry
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
         />
       </View>
 
-      <TouchableOpacity style={styles.primaryButton}>
-        <Text style={styles.primaryButtonText}>Sign Up</Text>
+      <TouchableOpacity
+        style={[styles.primaryButton, loading && styles.disabledButton]}
+        onPress={handleSignUp}
+        disabled={loading}
+      >
+        {loading ? (
+          <ActivityIndicator color={Colors.light.background} />
+        ) : (
+          <Text style={styles.primaryButtonText}>Sign Up</Text>
+        )}
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.googleButton}>
@@ -46,15 +95,12 @@ export default function SignUp(){
 
       <TouchableOpacity onPress={() => router.push("/login")}>
         <Text style={styles.linkText}>
-          Already have an account?{" "}
-          <Text style={styles.linkAccent}>Log in</Text>
+          Already have an account? <Text style={styles.linkAccent}>Log in</Text>
         </Text>
       </TouchableOpacity>
     </View>
   );
 }
-
-
 
 const styles = StyleSheet.create({
   container: {
@@ -118,6 +164,10 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
 
+  disabledButton: {
+    opacity: 0.6,
+  },
+
   primaryButtonText: {
     fontSize: 17,
     fontFamily: "PoppinsSemiBold",
@@ -153,4 +203,3 @@ const styles = StyleSheet.create({
     color: Colors.light.primary,
   },
 });
-    

@@ -1,46 +1,91 @@
-import{View, Text, StyleSheet, TextInput, TouchableOpacity,} from 'react-native';
-import {router} from 'expo-router';
-import { Colors } from '../../constants/Color';
+import { useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+  ActivityIndicator,
+} from "react-native";
+import { router } from "expo-router";
+import { Colors } from "../../constants/Color";
+import { useAuth } from "../../contexts/AuthContext";
 
-export default function Login(){
-    return(
-        <View style={styles.container}>
-            <Text style={styles.title}>Welcome Back</Text>
-            <Text style={styles.subtitle}>Sign in to keep earning <Text style={styles.accent}>rewards</Text> while helping LA move smarter.</Text>
+export default function Login() {
+  const { login } = useAuth();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-            <View style={styles.form}>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Email address"
-                    placeholderTextColor={Colors.light.inactive}
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Password"
-                    placeholderTextColor={Colors.light.inactive}
-                    secureTextEntry
-                />
-            </View>
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert("Error", "Please enter your email and password.");
+      return;
+    }
+    setLoading(true);
+    try {
+      await login(email, password);
+      router.replace("/(tabs)");
+    } catch (err) {
+      Alert.alert("Login Failed", err?.message || "Something went wrong.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-            <TouchableOpacity style={styles.primaryButton}>
-                <Text style={styles.primaryButtonText}>Log In</Text>
-            </TouchableOpacity>
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Welcome Back</Text>
+      <Text style={styles.subtitle}>
+        Sign in to keep earning <Text style={styles.accent}>rewards</Text> while
+        helping LA move smarter.
+      </Text>
 
-            <TouchableOpacity style={styles.googleButton}>
-                <Text style={styles.googleButtonText}>Log In with Google</Text>
-            </TouchableOpacity>
+      <View style={styles.form}>
+        <TextInput
+          style={styles.input}
+          placeholder="Email address"
+          placeholderTextColor={Colors.light.inactive}
+          keyboardType="email-address"
+          autoCapitalize="none"
+          value={email}
+          onChangeText={setEmail}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          placeholderTextColor={Colors.light.inactive}
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
+      </View>
 
-            <TouchableOpacity onPress={()=> router.push('/signup')}>
-              <Text style={styles.linkText}>
-                Don't have an account?{" "}
-                <Text style={styles.linkAccent}>Sign Up</Text>
-              </Text>
-            </TouchableOpacity>
-        </View>
-    );
-  }
+      <TouchableOpacity
+        style={[styles.primaryButton, loading && styles.disabledButton]}
+        onPress={handleLogin}
+        disabled={loading}
+      >
+        {loading ? (
+          <ActivityIndicator color={Colors.light.background} />
+        ) : (
+          <Text style={styles.primaryButtonText}>Log In</Text>
+        )}
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.googleButton}>
+        <Text style={styles.googleButtonText}>Log In with Google</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => router.push("/signup")}>
+        <Text style={styles.linkText}>
+          Don't have an account? <Text style={styles.linkAccent}>Sign Up</Text>
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -104,6 +149,10 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
 
+  disabledButton: {
+    opacity: 0.6,
+  },
+
   primaryButtonText: {
     fontSize: 17,
     fontFamily: "PoppinsSemiBold",
@@ -139,4 +188,3 @@ const styles = StyleSheet.create({
     color: Colors.light.primary,
   },
 });
-    
