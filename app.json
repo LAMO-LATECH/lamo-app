@@ -18,14 +18,25 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.lamo-app"
+      "bundleIdentifier": "com.ciddy0.lamo-app",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Lamo uses your location to show routes to your destinations.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Lamo uses your location to show routes to your destinations."
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#d9653b"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION"
+      ],
+      "package": "com.ciddy0.lamoapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -34,7 +45,15 @@
       "expo-router",
       "expo-font",
       "expo-web-browser",
-      "expo-secure-store"
+      "expo-secure-store",
+      "@rnmapbox/maps",
+      [
+        "expo-speech-recognition",
+        {
+          "microphonePermission": "Lamo needs your microphone to listen for voice search.",
+          "speechRecognitionPermission": "Lamo needs speech recognition to convert your voice to text."
+        }
+      ]
     ]
   }
 }
