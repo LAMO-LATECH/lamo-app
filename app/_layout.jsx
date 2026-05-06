@@ -48,6 +48,14 @@ function RootNavigator() {
           name="settings"
           options={{ headerShown: true, title: "Settings" }}
         />
+        <Stack.Screen
+          name="search"
+          options={{
+            presentation: "fullScreenModal",
+            animation: "slide_from_bottom",
+            headerShown: false,
+          }}
+        />
       </Stack>
       {isAuthenticated ? (
         <Redirect href="/(tabs)" />
