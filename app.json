@@ -45,7 +45,14 @@
       "expo-router",
       "expo-font",
       "expo-web-browser",
-      "@rnmapbox/maps"
+      "@rnmapbox/maps",
+      [
+        "expo-speech-recognition",
+        {
+          "microphonePermission": "Lamo needs your microphone to listen for voice search.",
+          "speechRecognitionPermission": "Lamo needs speech recognition to convert your voice to text."
+        }
+      ]
     ]
   }
 }
