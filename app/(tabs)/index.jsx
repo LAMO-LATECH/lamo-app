@@ -2,7 +2,8 @@ import { StyleSheet } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import MapboxGL from "@rnmapbox/maps";
 import BottomSheet from "@gorhom/bottom-sheet";
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
+import { useNavigation } from "expo-router";
 import MapControls from "../../components/home/MapControls";
 import StreakBadge from "../../components/home/StreakBadge";
 import BottomSheetContent from "../../components/home/BottomSheetContent";
@@ -13,6 +14,14 @@ MapboxGL.setAccessToken(process.env.EXPO_PUBLIC_MAPBOX_TOKEN);
 export default function Home() {
   const bottomSheetRef = useRef(null);
   const snapPoints = useMemo(() => ["45%", "80%"], []);
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("tabPress", () => {
+      bottomSheetRef.current?.snapToIndex(0);
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   return (
     <GestureHandlerRootView style={styles.fill}>
@@ -45,6 +54,7 @@ export default function Home() {
         ref={bottomSheetRef}
         index={0}
         snapPoints={snapPoints}
+        enablePanDownToClose={true}
         backgroundStyle={styles.sheetBackground}
         handleIndicatorStyle={styles.handleIndicator}
       >
