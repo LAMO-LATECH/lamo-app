@@ -14,6 +14,12 @@ if (process.env.EXPO_PUBLIC_USE_STUBS === 'true') {
         type: 'sourceFile',
       };
     }
+    if (moduleName === 'expo-speech-recognition') {
+      return {
+        filePath: path.resolve(__dirname, 'mocks/speech-recognition-stub.js'),
+        type: 'sourceFile',
+      };
+    }
     return context.resolveRequest(context, moduleName, platform);
   };
 }
