@@ -5,6 +5,7 @@ export const ENDPOINTS = {
   // auth
   register: "/api/v1/auth/register",
   login: "/api/v1/auth/login",
+  googleAuth: "/api/v1/auth/google",
   refresh: "/api/v1/auth/refresh",
   logout: "/api/v1/auth/logout",
 

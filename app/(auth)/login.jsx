@@ -9,14 +9,38 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { router } from "expo-router";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { Colors } from "../../constants/Color";
 import { useAuth } from "../../contexts/AuthContext";
 
+GoogleSignin.configure({
+  webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
+  iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID,
+});
+
 export default function Login() {
-  const { login } = useAuth();
+  const { login, googleLogin } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const handleGoogleLogin = async () => {
+    setLoading(true);
+    try {
+      await GoogleSignin.hasPlayServices();
+      const response = await GoogleSignin.signIn();
+      const idToken = response.data?.idToken;
+      if (!idToken) throw new Error("No ID token received from Google.");
+      await googleLogin(idToken);
+      router.replace("/(tabs)");
+    } catch (err) {
+      if (err.code !== "SIGN_IN_CANCELLED") {
+        Alert.alert("Google Login Failed", err?.message || "Something went wrong.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -74,7 +98,11 @@ export default function Login() {
         )}
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.googleButton}>
+      <TouchableOpacity
+        style={styles.googleButton}
+        onPress={handleGoogleLogin}
+        disabled={loading}
+      >
         <Text style={styles.googleButtonText}>Log In with Google</Text>
       </TouchableOpacity>
 

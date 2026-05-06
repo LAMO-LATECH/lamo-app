@@ -53,6 +53,12 @@
           "microphonePermission": "Lamo needs your microphone to listen for voice search.",
           "speechRecognitionPermission": "Lamo needs speech recognition to convert your voice to text."
         }
+      ],
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.1046684719177-pscsl5dim4c2id7bh3oj6rfu0t5btptb"
+        }
       ]
     ]
   }
