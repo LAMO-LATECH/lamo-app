@@ -8,6 +8,7 @@ import MapControls from "../../components/home/MapControls";
 import StreakBadge from "../../components/home/StreakBadge";
 import BottomSheetContent from "../../components/home/BottomSheetContent";
 import { Colors } from "../../constants/Color";
+import { shadow } from "../../constants/Tokens";
 
 MapboxGL.setAccessToken(process.env.EXPO_PUBLIC_MAPBOX_TOKEN);
 
@@ -69,7 +70,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   sheetBackground: {
-    backgroundColor: Colors.light.background,
+    backgroundColor: Colors.light.surface,
+    ...shadow.sm,
   },
   handleIndicator: {
     backgroundColor: Colors.light.border,

@@ -8,7 +8,7 @@ export default function SearchBar() {
     <Pressable style={styles.container}>
       <MagnifyingGlass
         size={iconSize.sm}
-        color={Colors.light.inactive}
+        color={Colors.light.primary}
         weight="bold"
       />
       <Text style={styles.placeholder}>Where to?</Text>
@@ -27,9 +27,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: Colors.light.surface,
-    borderWidth: 1,
-    borderColor: Colors.light.border,
+    backgroundColor: Colors.light.surfaceAlt,
     borderRadius: radius.lg,
     paddingLeft: spacing.lg,
     paddingRight: spacing.xs,

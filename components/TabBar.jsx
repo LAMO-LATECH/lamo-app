@@ -10,11 +10,17 @@ import Animated, {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useEffect } from "react";
 import { Colors } from "../constants/Color";
-import { spacing, radius, iconSize, typography } from "../constants/Tokens";
+import {
+  spacing,
+  radius,
+  iconSize,
+  typography,
+  shadow,
+} from "../constants/Tokens";
 
 const ACTIVE_COLOR = Colors.light.primary;
 const INACTIVE_COLOR = Colors.light.inactive;
-const BG_COLOR = Colors.light.background;
+const BG_COLOR = Colors.light.surfaceAlt;
 
 const TAB_CONFIG = {
   index: { label: "Map", Icon: MapPin },
@@ -117,8 +123,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     backgroundColor: BG_COLOR,
     paddingTop: spacing.md,
-    borderTopLeftRadius: radius.md,
-    borderTopRightRadius: radius.md,
+    ...shadow.sm,
   },
   tabItem: {
     flex: 1,

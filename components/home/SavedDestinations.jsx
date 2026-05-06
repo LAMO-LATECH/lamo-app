@@ -24,8 +24,8 @@ const ITEMS = [
     key: "new",
     label: "New",
     Icon: Plus,
-    bg: Colors.light.border,
-    iconColor: Colors.light.text,
+    bg: Colors.light.surfaceAlt,
+    iconColor: Colors.light.primary,
     weight: "bold",
   },
 ];
