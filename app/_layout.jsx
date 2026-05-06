@@ -28,6 +28,14 @@ const RootLayout = () => {
           <Stack.Screen name="(tabs)" />
           <Stack.Screen name="(auth)" />
           <Stack.Screen
+            name="search"
+            options={{
+              presentation: "fullScreenModal",
+              animation: "slide_from_bottom",
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
             name="settings"
             options={{ headerShown: true, title: "Settings" }}
           />

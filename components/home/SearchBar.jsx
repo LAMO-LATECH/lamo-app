@@ -1,11 +1,14 @@
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import { MagnifyingGlass, Microphone } from "phosphor-react-native";
+import { useRouter } from "expo-router";
 import { Colors } from "../../constants/Color";
 import { spacing, radius, iconSize, typography } from "../../constants/Tokens";
 
 export default function SearchBar() {
+  const router = useRouter();
+
   return (
-    <Pressable style={styles.container}>
+    <Pressable style={styles.container} onPress={() => router.push("/search")}>
       <MagnifyingGlass
         size={iconSize.sm}
         color={Colors.light.primary}
