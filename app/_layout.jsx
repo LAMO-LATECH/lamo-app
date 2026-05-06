@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Stack, Redirect } from "expo-router";
 import { View } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
@@ -18,9 +18,10 @@ function RootNavigator() {
     PoppinsBold: require("../assets/fonts/Poppins-Bold.ttf"),
   });
 
-  const onLayoutRootView = useCallback(async () => {
+  // Hide native splash as soon as fonts are ready
+  useEffect(() => {
     if (fontsLoaded) {
-      await SplashScreen.hideAsync();
+      SplashScreen.hideAsync();
     }
   }, [fontsLoaded]);
 
@@ -28,19 +29,18 @@ function RootNavigator() {
     setSplashAnimDone(true);
   }, []);
 
-  // Wait for both splash animation AND auth check before showing the app
-  const ready = splashAnimDone && !isLoading;
+  // Don't render anything until fonts are loaded (native splash still visible)
+  if (!fontsLoaded) {
+    return null;
+  }
 
-  if (!ready) {
-    return (
-      <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
-        <AnimatedSplash onFinish={handleSplashFinish} />
-      </View>
-    );
+  // Show animated splash until it finishes and auth is resolved
+  if (!splashAnimDone || isLoading) {
+    return <AnimatedSplash onFinish={handleSplashFinish} />;
   }
 
   return (
-    <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
+    <View style={{ flex: 1 }}>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" redirect={!isAuthenticated} />
         <Stack.Screen name="(auth)" redirect={isAuthenticated} />

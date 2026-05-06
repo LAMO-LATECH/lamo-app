@@ -35,6 +35,9 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     let cancelled = false;
+    const timeout = setTimeout(() => {
+      if (!cancelled) setIsLoading(false);
+    }, 5000);
     (async () => {
       try {
         const token = await getAccessToken();
@@ -45,10 +48,12 @@ export function AuthProvider({ children }) {
       } catch {
       } finally {
         if (!cancelled) setIsLoading(false);
+        clearTimeout(timeout);
       }
     })();
     return () => {
       cancelled = true;
+      clearTimeout(timeout);
     };
   }, []);
 

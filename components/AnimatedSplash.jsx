@@ -42,8 +42,8 @@ const AnimatedSplash = ({ onFinish }) => {
       withTiming(
         15,
         { duration: 600, easing: Easing.in(Easing.ease) },
-        (finished) => {
-          if (finished) runOnJS(onFinish)();
+        () => {
+          runOnJS(onFinish)();
         },
       ),
     );
