@@ -27,7 +27,10 @@ function PulsingRing({ delay }) {
     scale.value = withDelay(
       delay,
       withRepeat(
-        withTiming(1.8, { duration: RING_DURATION, easing: Easing.out(Easing.ease) }),
+        withTiming(1.8, {
+          duration: RING_DURATION,
+          easing: Easing.out(Easing.ease),
+        }),
         -1,
         false,
       ),
@@ -35,7 +38,10 @@ function PulsingRing({ delay }) {
     opacity.value = withDelay(
       delay,
       withRepeat(
-        withTiming(0, { duration: RING_DURATION, easing: Easing.out(Easing.ease) }),
+        withTiming(0, {
+          duration: RING_DURATION,
+          easing: Easing.out(Easing.ease),
+        }),
         -1,
         false,
       ),
@@ -101,10 +107,6 @@ export default function VoiceListeningOverlay({ visible, onResult, onClose }) {
       onRequestClose={onClose}
     >
       <View style={styles.backdrop}>
-        <Pressable style={styles.closeButton} onPress={onClose}>
-          <X size={28} color={Colors.light.surface} weight="bold" />
-        </Pressable>
-
         <View style={styles.center}>
           <Pressable style={styles.ringContainer} onPress={onClose}>
             <PulsingRing delay={0} />
