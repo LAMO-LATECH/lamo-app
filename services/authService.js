@@ -36,6 +36,23 @@ export async function login(email, password) {
   return data;
 }
 
+export async function googleAuth(idToken) {
+  const data = await apiRequest(ENDPOINTS.googleAuth, {
+    method: "POST",
+    body: { idToken },
+    auth: false,
+  });
+
+  if (data?.accessToken) {
+    await setTokens({
+      accessToken: data.accessToken,
+      refreshToken: data.refreshToken,
+    });
+  }
+
+  return data;
+}
+
 export async function logout() {
   try {
     await apiRequest(ENDPOINTS.logout, { method: "POST" });

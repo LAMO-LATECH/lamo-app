@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { router } from "expo-router";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { Colors } from "../../constants/Color";
 import { useAuth } from "../../contexts/AuthContext";
 
@@ -37,9 +38,13 @@ const getPasswordErrors = (password) => {
 
   return errors;
 };
+GoogleSignin.configure({
+  webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
+  iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID,
+});
 
 export default function SignUp() {
-  const { signup } = useAuth();
+  const { signup, googleLogin } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -87,6 +92,43 @@ const handleSignUp = async () => {
     setLoading(false);
   }
 };
+  const handleGoogleSignUp = async () => {
+    setLoading(true);
+    try {
+      await GoogleSignin.hasPlayServices();
+      const response = await GoogleSignin.signIn();
+      const idToken = response.data?.idToken;
+      if (!idToken) throw new Error("No ID token received from Google.");
+      await googleLogin(idToken);
+      router.replace("/(tabs)");
+    } catch (err) {
+      if (err.code !== "SIGN_IN_CANCELLED") {
+        Alert.alert("Google Sign Up Failed", err?.message || "Something went wrong.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSignUp = async () => {
+    if (!email || !password || !confirmPassword) {
+      Alert.alert("Error", "Please fill in all fields.");
+      return;
+    }
+    if (password !== confirmPassword) {
+      Alert.alert("Error", "Passwords do not match.");
+      return;
+    }
+    setLoading(true);
+    try {
+      await signup(email, password);
+      router.replace("/(tabs)");
+    } catch (err) {
+      Alert.alert("Sign Up Failed", err?.message || "Something went wrong.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -138,7 +180,11 @@ const handleSignUp = async () => {
         )}
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.googleButton}>
+      <TouchableOpacity
+        style={styles.googleButton}
+        onPress={handleGoogleSignUp}
+        disabled={loading}
+      >
         <Text style={styles.googleButtonText}>Continue with Google</Text>
       </TouchableOpacity>
 
