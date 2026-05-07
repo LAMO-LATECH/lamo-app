@@ -10,12 +10,16 @@ const BUTTONS = [
   { key: "layers", Icon: Stack },
 ];
 
-export default function MapControls() {
+export default function MapControls({ onRecenter, onCycleStyle }) {
   const router = useRouter();
 
   const handlePress = (key) => {
     if (key === "settings") {
       router.push("/settings");
+    } else if (key === "location") {
+      onRecenter?.();
+    } else if (key === "layers") {
+      onCycleStyle?.();
     }
   };
 

@@ -2,7 +2,7 @@ import { StyleSheet } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import MapboxGL from "@rnmapbox/maps";
 import BottomSheet from "@gorhom/bottom-sheet";
-import { useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigation } from "expo-router";
 import MapControls from "../../components/home/MapControls";
 import StreakBadge from "../../components/home/StreakBadge";
@@ -12,10 +12,19 @@ import { shadow } from "../../constants/Tokens";
 
 MapboxGL.setAccessToken(process.env.EXPO_PUBLIC_MAPBOX_TOKEN);
 
+const MAP_STYLES = [
+  "mapbox://styles/mapbox/light-v11",
+  "mapbox://styles/mapbox/dark-v11",
+  "mapbox://styles/mapbox/satellite-streets-v11",
+];
+
 export default function Home() {
   const bottomSheetRef = useRef(null);
+  const cameraRef = useRef(null);
   const snapPoints = useMemo(() => ["45%", "80%"], []);
   const navigation = useNavigation();
+  const [styleURL, setStyleURL] = useState(MAP_STYLES[0]);
+  const [followUser, setFollowUser] = useState(true);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("tabPress", () => {
@@ -24,17 +33,30 @@ export default function Home() {
     return unsubscribe;
   }, [navigation]);
 
+  const handleRecenter = useCallback(() => {
+    setFollowUser(true);
+  }, []);
+
+  const handleCycleStyle = useCallback(() => {
+    setStyleURL((current) => {
+      const index = MAP_STYLES.indexOf(current);
+      return MAP_STYLES[(index + 1) % MAP_STYLES.length];
+    });
+  }, []);
+
   return (
     <GestureHandlerRootView style={styles.fill}>
       <MapboxGL.MapView
         style={styles.fill}
-        styleURL="mapbox://styles/mapbox/light-v11"
+        styleURL={styleURL}
         logoEnabled={false}
         attributionEnabled={false}
         scaleBarEnabled={false}
+        onTouchStart={() => setFollowUser(false)}
       >
         <MapboxGL.Camera
-          followUserLocation
+          ref={cameraRef}
+          followUserLocation={followUser}
           followZoomLevel={14}
           animationMode="flyTo"
           animationDuration={1000}
@@ -48,7 +70,7 @@ export default function Home() {
         />
       </MapboxGL.MapView>
 
-      <MapControls />
+      <MapControls onRecenter={handleRecenter} onCycleStyle={handleCycleStyle} />
       <StreakBadge />
 
       <BottomSheet
