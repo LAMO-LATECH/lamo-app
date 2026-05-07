@@ -13,6 +13,10 @@ import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { Colors } from "../../constants/Color";
 import { useAuth } from "../../contexts/AuthContext";
 
+const validateEmail = (email) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email.trim());
+};
 GoogleSignin.configure({
   webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
   iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID,
@@ -43,20 +47,31 @@ export default function Login() {
   };
 
   const handleLogin = async () => {
-    if (!email || !password) {
-      Alert.alert("Error", "Please enter your email and password.");
-      return;
-    }
-    setLoading(true);
-    try {
-      await login(email, password);
-      router.replace("/(tabs)");
-    } catch (err) {
-      Alert.alert("Login Failed", err?.message || "Something went wrong.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const cleanEmail = email.trim().toLowerCase();
+  const cleanPassword = password.trim();
+
+  // empty check
+  if (!cleanEmail || !cleanPassword) {
+    Alert.alert("Error", "Please enter your email and password.");
+    return;
+  }
+
+  // email format check
+  if (!validateEmail(cleanEmail)) {
+    Alert.alert("Invalid Email", "Please enter a valid email address.");
+    return;
+  }
+
+  setLoading(true);
+  try {
+    await login(cleanEmail, cleanPassword);
+    router.replace("/(tabs)");
+  } catch (err) {
+    Alert.alert("Login Failed", err?.message || "Something went wrong.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <View style={styles.container}>

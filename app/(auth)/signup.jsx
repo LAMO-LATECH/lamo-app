@@ -13,6 +13,31 @@ import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { Colors } from "../../constants/Color";
 import { useAuth } from "../../contexts/AuthContext";
 
+// ===== Validation Helpers =====
+const validateEmail = (email) => {
+  const emailRegex =
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email.trim());
+};
+
+const validatePassword = (password) => {
+  // Minimum 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$/;
+  return passwordRegex.test(password);
+};
+
+const getPasswordErrors = (password) => {
+  const errors = [];
+
+  if (password.length < 8) errors.push("• At least 8 characters");
+  if (!/[A-Z]/.test(password)) errors.push("• One uppercase letter");
+  if (!/[a-z]/.test(password)) errors.push("• One lowercase letter");
+  if (!/\d/.test(password)) errors.push("• One number");
+  if (!/[^A-Za-z\d]/.test(password)) errors.push("• One special character");
+
+  return errors;
+};
 GoogleSignin.configure({
   webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
   iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID,
@@ -25,6 +50,48 @@ export default function SignUp() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
+const handleSignUp = async () => {
+  // Trim inputs (security best practice)
+  const cleanEmail = email.trim().toLowerCase();
+  const cleanPassword = password.trim();
+  const cleanConfirm = confirmPassword.trim();
+
+  // 1️⃣ Empty fields
+  if (!cleanEmail || !cleanPassword || !cleanConfirm) {
+    Alert.alert("Error", "Please fill in all fields.");
+    return;
+  }
+
+  // 2️⃣ Email format check
+  if (!validateEmail(cleanEmail)) {
+    Alert.alert("Invalid Email", "Please enter a valid email address.");
+    return;
+  }
+
+  // 3️⃣ Password strength check
+  if (!validatePassword(cleanPassword)) {
+    const errors = getPasswordErrors(cleanPassword).join("\n");
+    Alert.alert("Weak Password", `Password must contain:\n${errors}`);
+    return;
+  }
+
+  // 4️⃣ Password match check
+  if (cleanPassword !== cleanConfirm) {
+    Alert.alert("Error", "Passwords do not match.");
+    return;
+  }
+
+  // 5️⃣ Send to backend only after passing validation
+  setLoading(true);
+  try {
+    await signup(cleanEmail, cleanPassword);
+    router.replace("/(tabs)");
+  } catch (err) {
+    Alert.alert("Sign Up Failed", err?.message || "Something went wrong.");
+  } finally {
+    setLoading(false);
+  }
+};
   const handleGoogleSignUp = async () => {
     setLoading(true);
     try {
