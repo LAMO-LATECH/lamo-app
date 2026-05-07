@@ -112,26 +112,6 @@ export default function SignUp() {
     }
   };
 
-  const handleSignUp = async () => {
-    if (!email || !password || !confirmPassword) {
-      Alert.alert("Error", "Please fill in all fields.");
-      return;
-    }
-    if (password !== confirmPassword) {
-      Alert.alert("Error", "Passwords do not match.");
-      return;
-    }
-    setLoading(true);
-    try {
-      await signup(email, password);
-      router.replace("/(tabs)");
-    } catch (err) {
-      Alert.alert("Sign Up Failed", err?.message || "Something went wrong.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Create your account</Text>
