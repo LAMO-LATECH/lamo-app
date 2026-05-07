@@ -1,5 +1,6 @@
 import { View, Pressable, StyleSheet } from "react-native";
 import { GearSix, Crosshair, Stack } from "phosphor-react-native";
+import { useRouter } from "expo-router";
 import { Colors } from "../../constants/Color";
 import { spacing, radius, iconSize, shadow } from "../../constants/Tokens";
 
@@ -10,10 +11,18 @@ const BUTTONS = [
 ];
 
 export default function MapControls() {
+  const router = useRouter();
+
+  const handlePress = (key) => {
+    if (key === "settings") {
+      router.push("/settings");
+    }
+  };
+
   return (
     <View style={styles.container}>
       {BUTTONS.map(({ key, Icon }) => (
-        <Pressable key={key} style={styles.button}>
+        <Pressable key={key} style={styles.button} onPress={() => handlePress(key)}>
           <Icon size={iconSize.sm} color={Colors.light.text} weight="bold" />
         </Pressable>
       ))}
