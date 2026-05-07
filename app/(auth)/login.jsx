@@ -39,7 +39,10 @@ export default function Login() {
       router.replace("/(tabs)");
     } catch (err) {
       if (err.code !== "SIGN_IN_CANCELLED") {
-        Alert.alert("Google Login Failed", err?.message || "Something went wrong.");
+        Alert.alert(
+          "Google Login Failed",
+          err?.message || "Something went wrong.",
+        );
       }
     } finally {
       setLoading(false);
@@ -47,31 +50,31 @@ export default function Login() {
   };
 
   const handleLogin = async () => {
-  const cleanEmail = email.trim().toLowerCase();
-  const cleanPassword = password.trim();
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanPassword = password.trim();
 
-  // empty check
-  if (!cleanEmail || !cleanPassword) {
-    Alert.alert("Error", "Please enter your email and password.");
-    return;
-  }
+    // empty check
+    if (!cleanEmail || !cleanPassword) {
+      Alert.alert("Error", "Please enter your email and password.");
+      return;
+    }
 
-  // email format check
-  if (!validateEmail(cleanEmail)) {
-    Alert.alert("Invalid Email", "Please enter a valid email address.");
-    return;
-  }
+    // email format check
+    if (!validateEmail(cleanEmail)) {
+      Alert.alert("Invalid Email", "Please enter a valid email address.");
+      return;
+    }
 
-  setLoading(true);
-  try {
-    await login(cleanEmail, cleanPassword);
-    router.replace("/(tabs)");
-  } catch (err) {
-    Alert.alert("Login Failed", err?.message || "Something went wrong.");
-  } finally {
-    setLoading(false);
-  }
-};
+    setLoading(true);
+    try {
+      await login(cleanEmail, cleanPassword);
+      router.replace("/(tabs)");
+    } catch (err) {
+      Alert.alert("Login Failed", err?.message || "Something went wrong.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <View style={styles.container}>

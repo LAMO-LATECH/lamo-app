@@ -15,8 +15,7 @@ import { useAuth } from "../../contexts/AuthContext";
 
 // ===== Validation Helpers =====
 const validateEmail = (email) => {
-  const emailRegex =
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email.trim());
 };
 
@@ -50,48 +49,48 @@ export default function SignUp() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-const handleSignUp = async () => {
-  // Trim inputs (security best practice)
-  const cleanEmail = email.trim().toLowerCase();
-  const cleanPassword = password.trim();
-  const cleanConfirm = confirmPassword.trim();
+  const handleSignUp = async () => {
+    // Trim inputs (security best practice)
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanPassword = password.trim();
+    const cleanConfirm = confirmPassword.trim();
 
-  // 1️⃣ Empty fields
-  if (!cleanEmail || !cleanPassword || !cleanConfirm) {
-    Alert.alert("Error", "Please fill in all fields.");
-    return;
-  }
+    // 1️⃣ Empty fields
+    if (!cleanEmail || !cleanPassword || !cleanConfirm) {
+      Alert.alert("Error", "Please fill in all fields.");
+      return;
+    }
 
-  // 2️⃣ Email format check
-  if (!validateEmail(cleanEmail)) {
-    Alert.alert("Invalid Email", "Please enter a valid email address.");
-    return;
-  }
+    // 2️⃣ Email format check
+    if (!validateEmail(cleanEmail)) {
+      Alert.alert("Invalid Email", "Please enter a valid email address.");
+      return;
+    }
 
-  // 3️⃣ Password strength check
-  if (!validatePassword(cleanPassword)) {
-    const errors = getPasswordErrors(cleanPassword).join("\n");
-    Alert.alert("Weak Password", `Password must contain:\n${errors}`);
-    return;
-  }
+    // 3️⃣ Password strength check
+    if (!validatePassword(cleanPassword)) {
+      const errors = getPasswordErrors(cleanPassword).join("\n");
+      Alert.alert("Weak Password", `Password must contain:\n${errors}`);
+      return;
+    }
 
-  // 4️⃣ Password match check
-  if (cleanPassword !== cleanConfirm) {
-    Alert.alert("Error", "Passwords do not match.");
-    return;
-  }
+    // 4️⃣ Password match check
+    if (cleanPassword !== cleanConfirm) {
+      Alert.alert("Error", "Passwords do not match.");
+      return;
+    }
 
-  // 5️⃣ Send to backend only after passing validation
-  setLoading(true);
-  try {
-    await signup(cleanEmail, cleanPassword);
-    router.replace("/(tabs)");
-  } catch (err) {
-    Alert.alert("Sign Up Failed", err?.message || "Something went wrong.");
-  } finally {
-    setLoading(false);
-  }
-};
+    // 5️⃣ Send to backend only after passing validation
+    setLoading(true);
+    try {
+      await signup(cleanEmail, cleanPassword);
+      router.replace("/(tabs)");
+    } catch (err) {
+      Alert.alert("Sign Up Failed", err?.message || "Something went wrong.");
+    } finally {
+      setLoading(false);
+    }
+  };
   const handleGoogleSignUp = async () => {
     setLoading(true);
     try {
@@ -103,7 +102,10 @@ const handleSignUp = async () => {
       router.replace("/(tabs)");
     } catch (err) {
       if (err.code !== "SIGN_IN_CANCELLED") {
-        Alert.alert("Google Sign Up Failed", err?.message || "Something went wrong.");
+        Alert.alert(
+          "Google Sign Up Failed",
+          err?.message || "Something went wrong.",
+        );
       }
     } finally {
       setLoading(false);
