@@ -12,4 +12,7 @@ export const ENDPOINTS = {
   // user
   me: "/api/v1/users/me",
   preferences: "/api/v1/users/me/preferences",
+
+  // destinations
+  destinations: "/api/v1/users/me/destinations",
 };
