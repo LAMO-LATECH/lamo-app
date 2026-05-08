@@ -13,6 +13,7 @@ import { router } from "expo-router";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { Colors } from "../../constants/Color";
 import { useAuth } from "../../contexts/AuthContext";
+import LottieView from "lottie-react-native";
 
 // ===== Validation Helpers =====
 const validateEmail = (email) => {
@@ -117,6 +118,14 @@ export default function SignUp() {
 
   return (
     <View style={styles.container}>
+      <View style={styles.animationContainer}>
+        <LottieView
+          source={require("../../assets/gps.json")}
+          autoPlay
+          loop={false}
+          style={styles.animation}
+        />
+      </View>
       <Text style={styles.title}>Create your account</Text>
 
       <Text style={styles.subtitle}>
@@ -136,20 +145,18 @@ export default function SignUp() {
 
         <View style={styles.passwordWrapper}>
           <TextInput
-          style={styles.passwordInput}
-          placeholder="Password"
-          placeholderTextColor={Colors.light.inactive}
-          //when showPassword is false, text is hidden
-          //when true text is visible
-          secureTextEntry={!showPassword}
-          value={password}
-          onChangeText={setPassword}
-        />
-        <Pressable onPress={() => setShowPassword(!showPassword)}>
-          <Text style={styles.eyeText}>
-            {showPassword ? "Hide" : "Show"}
-          </Text>
-        </Pressable>
+            style={styles.passwordInput}
+            placeholder="Password"
+            placeholderTextColor={Colors.light.inactive}
+            //when showPassword is false, text is hidden
+            //when true text is visible
+            secureTextEntry={!showPassword}
+            value={password}
+            onChangeText={setPassword}
+          />
+          <Pressable onPress={() => setShowPassword(!showPassword)}>
+            <Text style={styles.eyeText}>{showPassword ? "Hide" : "Show"}</Text>
+          </Pressable>
         </View>
 
         <View style={styles.passwordWrapper}>
@@ -164,7 +171,9 @@ export default function SignUp() {
             onChangeText={setConfirmPassword}
           />
           {/*Button to toggle confirm password visibility*/}
-          <Pressable onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
+          <Pressable
+            onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+          >
             <Text style={styles.eyeText}>
               {showConfirmPassword ? "Hide" : "Show"}
             </Text>
@@ -326,5 +335,18 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontFamily: "PoppinsSemiBold",
     color: Colors.light.accent,
+  },
+
+  animationContainer: {
+    width: 180,
+    height: 100,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 30,
+    position: "relative",
+  },
+  animation: {
+    width: "150%",
+    height: "150%",
   },
 });
