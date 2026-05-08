@@ -84,7 +84,7 @@ export default function SignUp() {
     setLoading(true);
     try {
       await signup(cleanEmail, cleanPassword);
-      router.replace("/(tabs)");
+      router.replace("/username");
     } catch (err) {
       Alert.alert("Sign Up Failed", err?.message || "Something went wrong.");
     } finally {
