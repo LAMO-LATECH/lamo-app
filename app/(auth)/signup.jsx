@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Alert,
   ActivityIndicator,
+  Pressable,
 } from "react-native";
 import { router } from "expo-router";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
@@ -48,6 +49,8 @@ export default function SignUp() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleSignUp = async () => {
     // Trim inputs (security best practice)
@@ -131,23 +134,42 @@ export default function SignUp() {
           onChangeText={setEmail}
         />
 
-        <TextInput
-          style={styles.input}
+        <View style={styles.passwordWrapper}>
+          <TextInput
+          style={styles.passwordInput}
           placeholder="Password"
           placeholderTextColor={Colors.light.inactive}
-          secureTextEntry
+          //when showPassword is false, text is hidden
+          //when true text is visible
+          secureTextEntry={!showPassword}
           value={password}
           onChangeText={setPassword}
         />
+        <Pressable onPress={() => setShowPassword(!showPassword)}>
+          <Text style={styles.eyeText}>
+            {showPassword ? "Hide" : "Show"}
+          </Text>
+        </Pressable>
+        </View>
 
-        <TextInput
-          style={styles.input}
-          placeholder="Confirm Password"
-          placeholderTextColor={Colors.light.inactive}
-          secureTextEntry
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-        />
+        <View style={styles.passwordWrapper}>
+          <TextInput
+            style={styles.passwordInput}
+            placeholder="Confirm Password"
+            placeholderTextColor={Colors.light.inactive}
+            //when showConfirmPassword is false, text is hidden
+            //when true text is visible
+            secureTextEntry={!showConfirmPassword}
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+          />
+          {/*Button to toggle confirm password visibility*/}
+          <Pressable onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
+            <Text style={styles.eyeText}>
+              {showConfirmPassword ? "Hide" : "Show"}
+            </Text>
+          </Pressable>
+        </View>
       </View>
 
       <TouchableOpacity
@@ -278,5 +300,31 @@ const styles = StyleSheet.create({
   linkAccent: {
     fontFamily: "PoppinsSemiBold",
     color: Colors.light.primary,
+  },
+
+  passwordWrapper: {
+    width: "100%",
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#E8E1DA",
+    borderRadius: 18,
+    paddingHorizontal: 18,
+    marginBottom: 14,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+
+  passwordInput: {
+    flex: 1,
+    paddingVertical: 16,
+    fontSize: 15,
+    fontFamily: "PoppinsRegular",
+    color: Colors.light.text,
+  },
+
+  eyeText: {
+    fontSize: 13,
+    fontFamily: "PoppinsSemiBold",
+    color: Colors.light.accent,
   },
 });

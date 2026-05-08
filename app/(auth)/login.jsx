@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Alert,
   ActivityIndicator,
+  Pressable,
 } from "react-native";
 import { router } from "expo-router";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
@@ -27,6 +28,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleGoogleLogin = async () => {
     setLoading(true);
@@ -94,14 +96,24 @@ export default function Login() {
           value={email}
           onChangeText={setEmail}
         />
-        <TextInput
-          style={styles.input}
+        <View style={styles.passwordWrapper}>
+          <TextInput
+          style={styles.passwordInput}
           placeholder="Password"
           placeholderTextColor={Colors.light.inactive}
-          secureTextEntry
+          //when showPassword is false, text is hidden
+          //when true text is visible
+          secureTextEntry={!showPassword}
           value={password}
           onChangeText={setPassword}
-        />
+          />
+          {/*Button to toggle password visibility*/}
+          <Pressable onPress={() => setShowPassword(!showPassword)}>
+            <Text style={styles.eyeText}>
+              {showPassword ? "Hide" : "Show"}
+              </Text>
+              </Pressable>
+          </View>
       </View>
 
       <TouchableOpacity
@@ -232,5 +244,31 @@ const styles = StyleSheet.create({
   linkAccent: {
     fontFamily: "PoppinsSemiBold",
     color: Colors.light.primary,
+  },
+
+  passwordWrapper: {
+    width: "100%",
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#E8E1DA",
+    borderRadius: 18,
+    paddingHorizontal: 18,
+    marginBottom: 14,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+
+  passwordInput: {
+    flex: 1,
+    paddingVertical: 16,
+    fontSize: 15,
+    fontFamily: "PoppinsRegular",
+    color: Colors.light.text,
+  },
+
+  eyeText: {
+    fontSize: 13,
+    fontFamily: "PoppinsSemiBold",
+    color: Colors.light.accent,
   },
 });
