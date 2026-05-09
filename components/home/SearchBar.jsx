@@ -6,7 +6,7 @@ import { Colors } from "../../constants/Color";
 import { spacing, radius, iconSize, typography } from "../../constants/Tokens";
 import VoiceListeningOverlay from "../VoiceListeningOverlay";
 
-export default function SearchBar({ editable, defaultValue, autoFocus }) {
+export default function SearchBar({ editable, defaultValue, autoFocus, onChangeText, value }) {
   const router = useRouter();
   const [voiceVisible, setVoiceVisible] = useState(false);
   const inputRef = useRef(null);
@@ -22,6 +22,7 @@ export default function SearchBar({ editable, defaultValue, autoFocus }) {
     if (editable) {
       inputRef.current?.setNativeProps({ text });
       inputRef.current?.focus();
+      onChangeText?.(text);
     } else {
       router.push({ pathname: "/search", params: { q: text } });
     }
@@ -43,6 +44,8 @@ export default function SearchBar({ editable, defaultValue, autoFocus }) {
               placeholder="Where to?"
               placeholderTextColor={Colors.light.inactive}
               defaultValue={defaultValue}
+              value={value}
+              onChangeText={onChangeText}
               returnKeyType="search"
             />
           </>

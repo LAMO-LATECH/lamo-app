@@ -5,6 +5,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
 import AnimatedSplash from "../components/AnimatedSplash";
 import { AuthProvider, useAuth } from "../contexts/AuthContext";
+import { DestinationProvider } from "../contexts/DestinationContext";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -78,7 +79,9 @@ function RootNavigator() {
 const RootLayout = () => {
   return (
     <AuthProvider>
-      <RootNavigator />
+      <DestinationProvider>
+        <RootNavigator />
+      </DestinationProvider>
     </AuthProvider>
   );
 };

@@ -4,6 +4,7 @@ import MapboxGL from "@rnmapbox/maps";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigation } from "expo-router";
+import { useDestination } from "../../contexts/DestinationContext";
 import MapControls from "../../components/home/MapControls";
 import StreakBadge from "../../components/home/StreakBadge";
 import BottomSheetContent from "../../components/home/BottomSheetContent";
@@ -23,8 +24,10 @@ export default function Home() {
   const cameraRef = useRef(null);
   const snapPoints = useMemo(() => ["45%", "80%"], []);
   const navigation = useNavigation();
+  const { destination: selectedDestination, clearDestination } = useDestination();
   const [styleURL, setStyleURL] = useState(MAP_STYLES[0]);
   const [followUser, setFollowUser] = useState(true);
+  const [destination, setDestination] = useState(null);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("tabPress", () => {
@@ -32,6 +35,20 @@ export default function Home() {
     });
     return unsubscribe;
   }, [navigation]);
+
+  useEffect(() => {
+    if (selectedDestination) {
+      setDestination(selectedDestination);
+      setFollowUser(false);
+      cameraRef.current?.setCamera({
+        centerCoordinate: [selectedDestination.longitude, selectedDestination.latitude],
+        zoomLevel: 15,
+        animationDuration: 1500,
+        animationMode: "flyTo",
+      });
+      clearDestination();
+    }
+  }, [selectedDestination]);
 
   const handleRecenter = useCallback(() => {
     setFollowUser(true);
@@ -68,6 +85,13 @@ export default function Home() {
             color: Colors.light.primary,
           }}
         />
+        {destination && (
+          <MapboxGL.PointAnnotation
+            id="destination"
+            coordinate={[destination.longitude, destination.latitude]}
+            title={destination.name}
+          />
+        )}
       </MapboxGL.MapView>
 
       <MapControls onRecenter={handleRecenter} onCycleStyle={handleCycleStyle} />

@@ -19,6 +19,8 @@ import {
   updateDestination,
   deleteDestination,
 } from "../services/destinationService";
+import useMapboxSearch from "../hooks/useMapboxSearch";
+import SuggestionList from "../components/search/SuggestionList";
 
 const TITLES = {
   home: "Set Home Location",
@@ -33,8 +35,11 @@ export default function SaveDestinationScreen() {
 
   const [label, setLabel] = useState(currentLabel ?? "");
   const [address, setAddress] = useState(currentAddress ?? "");
+  const [coordinates, setCoordinates] = useState(null);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const search = useMapboxSearch();
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   const isEditing =
     (type === "home" || type === "work") ? !!currentAddress : !!id;
@@ -46,18 +51,17 @@ export default function SaveDestinationScreen() {
     if (!canSave) return;
     setSaving(true);
     try {
+      const payload = { address: address.trim() };
+      if (coordinates) {
+        payload.latitude = coordinates.latitude;
+        payload.longitude = coordinates.longitude;
+      }
       if (type === "home" || type === "work") {
-        await upsertDestination(type, { address: address.trim() });
+        await upsertDestination(type, payload);
       } else if (id) {
-        await updateDestination(id, {
-          label: label.trim(),
-          address: address.trim(),
-        });
+        await updateDestination(id, { label: label.trim(), ...payload });
       } else {
-        await createDestination({
-          label: label.trim(),
-          address: address.trim(),
-        });
+        await createDestination({ label: label.trim(), ...payload });
       }
       router.back();
     } catch (err) {
@@ -122,9 +126,31 @@ export default function SaveDestinationScreen() {
           placeholder="Address"
           placeholderTextColor={Colors.light.inactive}
           value={address}
-          onChangeText={setAddress}
+          onChangeText={(text) => {
+            setAddress(text);
+            search.updateQuery(text);
+            setShowSuggestions(true);
+          }}
           autoFocus={type !== "new"}
         />
+
+        {showSuggestions && (search.suggestions.length > 0 || search.loading) && (
+          <SuggestionList
+            suggestions={search.suggestions}
+            loading={search.loading}
+            error={search.error}
+            onSelect={async (suggestion) => {
+              const place = await search.selectSuggestion(suggestion);
+              if (place) {
+                setAddress(place.fullAddress);
+                setCoordinates(place.coordinates);
+              } else {
+                setAddress(suggestion.fullAddress);
+              }
+              setShowSuggestions(false);
+            }}
+          />
+        )}
 
         <Pressable
           style={[styles.saveBtn, !canSave && styles.saveBtnDisabled]}
