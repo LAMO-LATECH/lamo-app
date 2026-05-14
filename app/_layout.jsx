@@ -43,6 +43,7 @@ function RootNavigator() {
   return (
     <View style={{ flex: 1 }}>
       <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="/rideHistory" />
         <Stack.Screen name="(tabs)" redirect={!isAuthenticated} />
         <Stack.Screen name="(auth)" redirect={isAuthenticated} />
         <Stack.Screen name="username"/>
