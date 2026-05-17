@@ -11,7 +11,12 @@ import {
   TextInput,
   Alert,
 } from "react-native";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+} from "react-native-reanimated";
 import { fonts } from "../constants/Tokens";
 import {
   getPreferences,
@@ -19,16 +24,71 @@ import {
   deleteAccount,
 } from "../services/userService";
 import { useAuth } from "../contexts/AuthContext";
-import { CaretRight, ArrowLeft } from "phosphor-react-native";
+import {
+  CaretRight,
+  ArrowLeft,
+  DeviceMobile,
+  Sun,
+  Moon,
+} from "phosphor-react-native";
 import { router } from "expo-router";
 import LegalModal from "../components/LegalModal";
 import { useTheme } from "../contexts/ThemeContext";
 
 const APPEARANCE_OPTIONS = [
-  { value: "system", label: "System Default" },
-  { value: "light", label: "Light" },
-  { value: "dark", label: "Dark" },
+  { value: "system", Icon: DeviceMobile },
+  { value: "light", Icon: Sun },
+  { value: "dark", Icon: Moon },
 ];
+
+function AppearanceToggle({ preference, onSelect, colors, styles }) {
+  const activeIndex = APPEARANCE_OPTIONS.findIndex(
+    (o) => o.value === preference,
+  );
+  const translateX = useSharedValue(activeIndex);
+
+  useEffect(() => {
+    translateX.value = withTiming(activeIndex, { duration: 250 });
+  }, [activeIndex]);
+
+  const indicatorStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: translateX.value * segmentWidth }],
+  }));
+
+  const [containerWidth, setContainerWidth] = useState(0);
+  const segmentWidth = containerWidth / 3;
+
+  return (
+    <View
+      style={styles.segmentedControl}
+      onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width - 8)}
+    >
+      <Animated.View
+        style={[
+          styles.segmentIndicator,
+          { width: segmentWidth },
+          indicatorStyle,
+        ]}
+      />
+      {APPEARANCE_OPTIONS.map((option) => {
+        const isActive = preference === option.value;
+        return (
+          <Pressable
+            key={option.value}
+            style={styles.segment}
+            onPress={() => onSelect(option.value)}
+          >
+            <option.Icon
+              size={20}
+              weight={isActive ? "fill" : "regular"}
+              color={isActive ? colors.primary : colors.inactive}
+            />
+          </Pressable>
+        );
+      })}
+    </View>
+  );
+}
 
 const Settings = () => {
   const { logout } = useAuth();
@@ -106,25 +166,12 @@ const Settings = () => {
 
         <Text style={styles.sectionHeader}>Appearance</Text>
 
-        {APPEARANCE_OPTIONS.map((option) => (
-          <Pressable
-            key={option.value}
-            style={styles.toggleRow}
-            onPress={() => setThemePreference(option.value)}
-          >
-            <Text style={styles.toggleLabel}>{option.label}</Text>
-            <View
-              style={[
-                styles.radioOuter,
-                preference === option.value && styles.radioOuterSelected,
-              ]}
-            >
-              {preference === option.value && (
-                <View style={styles.radioInner} />
-              )}
-            </View>
-          </Pressable>
-        ))}
+        <AppearanceToggle
+          preference={preference}
+          onSelect={setThemePreference}
+          colors={colors}
+          styles={styles}
+        />
 
         <Text style={styles.sectionHeader}>Preferences</Text>
 
@@ -311,23 +358,30 @@ const createStyles = (colors) =>
       fontFamily: fonts.semiBold,
       color: colors.text,
     },
-    radioOuter: {
-      width: 22,
-      height: 22,
-      borderRadius: 11,
-      borderWidth: 2,
+    segmentedControl: {
+      flexDirection: "row",
+      backgroundColor: colors.surface,
+      borderWidth: 1,
       borderColor: colors.border,
+      borderRadius: 18,
+      padding: 4,
+      marginBottom: 10,
+    },
+    segment: {
+      flex: 1,
       alignItems: "center",
       justifyContent: "center",
+      paddingVertical: 12,
+      borderRadius: 14,
+      zIndex: 1,
     },
-    radioOuterSelected: {
-      borderColor: colors.primary,
-    },
-    radioInner: {
-      width: 12,
-      height: 12,
-      borderRadius: 6,
-      backgroundColor: colors.primary,
+    segmentIndicator: {
+      position: "absolute",
+      top: 4,
+      left: 4,
+      bottom: 4,
+      borderRadius: 14,
+      backgroundColor: colors.surfaceAlt,
     },
     accountRow: {
       backgroundColor: colors.surfaceDark,
