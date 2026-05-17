@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, ScrollView } from "react-native";
-import { fonts } from "../../constants/Tokens";
+import { fonts, spacing, radius, typography } from "../../constants/Tokens";
 import { Trophy, Coffee, Car, Leaf } from "phosphor-react-native";
 import { useTheme } from "../../contexts/ThemeContext";
 
@@ -101,23 +101,23 @@ const createStyles = (colors) =>
       backgroundColor: colors.background,
     },
     contentContainer: {
-      paddingHorizontal: 24,
+      paddingHorizontal: spacing.xxl,
       paddingTop: 65,
-      paddingBottom: 32,
+      paddingBottom: spacing.xxxl,
     },
     title: {
-      fontSize: 24,
+      fontSize: typography.h4.fontSize,
       fontFamily: fonts.bold,
       color: colors.text,
-      marginBottom: 16,
+      marginBottom: spacing.lg,
     },
     pointsNumber: {
-      fontSize: 48,
+      fontSize: typography.display.fontSize,
       fontFamily: fonts.bold,
       color: colors.text,
     },
     pointsLabel: {
-      fontSize: 14,
+      fontSize: typography.bodySmall.fontSize,
       fontFamily: fonts.regular,
       color: colors.text,
       opacity: 0.6,
@@ -127,8 +127,8 @@ const createStyles = (colors) =>
       backgroundColor: colors.surface,
       borderWidth: 1,
       borderColor: colors.border,
-      borderRadius: 20,
-      padding: 20,
+      borderRadius: radius.md,
+      padding: spacing.xl,
       marginBottom: 28,
     },
     tierTopRow: {
@@ -142,17 +142,17 @@ const createStyles = (colors) =>
       alignItems: "center",
       gap: 6,
       backgroundColor: colors.surfaceDark,
-      borderRadius: 999,
+      borderRadius: radius.full,
       paddingHorizontal: 14,
       paddingVertical: 6,
     },
     tierBadgeText: {
-      fontSize: 13,
+      fontSize: typography.bodySmall.fontSize,
       fontFamily: fonts.semiBold,
       color: "#FFFFFF",
     },
     tierProgressText: {
-      fontSize: 13,
+      fontSize: typography.bodySmall.fontSize,
       fontFamily: fonts.regular,
       color: colors.text,
       opacity: 0.6,
@@ -162,7 +162,7 @@ const createStyles = (colors) =>
       backgroundColor: colors.border,
       borderRadius: 5,
       overflow: "hidden",
-      marginBottom: 8,
+      marginBottom: spacing.sm,
     },
     progressFill: {
       height: "100%",
@@ -174,13 +174,13 @@ const createStyles = (colors) =>
       justifyContent: "space-between",
     },
     tierLabel: {
-      fontSize: 12,
+      fontSize: typography.caption.fontSize,
       fontFamily: fonts.regular,
       color: colors.text,
       opacity: 0.6,
     },
     sectionHeader: {
-      fontSize: 12,
+      fontSize: typography.caption.fontSize,
       fontFamily: fonts.semiBold,
       color: colors.text,
       opacity: 0.5,
@@ -191,11 +191,11 @@ const createStyles = (colors) =>
       backgroundColor: colors.surface,
       borderWidth: 1,
       borderColor: colors.border,
-      borderRadius: 20,
-      padding: 16,
+      borderRadius: radius.md,
+      padding: spacing.lg,
       flexDirection: "row",
       alignItems: "center",
-      marginBottom: 12,
+      marginBottom: spacing.md,
     },
     rewardIcon: {
       width: 52,
@@ -209,26 +209,26 @@ const createStyles = (colors) =>
       flex: 1,
     },
     rewardTitle: {
-      fontSize: 16,
+      fontSize: typography.body.fontSize,
       fontFamily: fonts.semiBold,
       color: colors.text,
     },
     rewardPartner: {
-      fontSize: 13,
+      fontSize: typography.bodySmall.fontSize,
       fontFamily: fonts.regular,
       color: colors.text,
       opacity: 0.6,
     },
     pointsPill: {
       backgroundColor: colors.primary,
-      borderRadius: 999,
+      borderRadius: radius.full,
       paddingHorizontal: 14,
       paddingVertical: 6,
       minWidth: 64,
       alignItems: "center",
     },
     pointsPillText: {
-      fontSize: 13,
+      fontSize: typography.bodySmall.fontSize,
       fontFamily: fonts.semiBold,
       color: "#FFFFFF",
     },

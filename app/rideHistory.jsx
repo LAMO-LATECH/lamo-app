@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Pressable } from "react-native";
-import { fonts } from "../constants/Tokens";
+import { fonts, spacing, typography } from "../constants/Tokens";
 import { ArrowLeft } from "phosphor-react-native";
 import { router } from "expo-router";
 import { useTheme } from "../contexts/ThemeContext";
@@ -28,16 +28,16 @@ const createStyles = (colors) =>
       backgroundColor: colors.background,
       alignItems: "center",
       justifyContent: "center",
-      paddingHorizontal: 24,
+      paddingHorizontal: spacing.xxl,
     },
     title: {
-      fontSize: 32,
+      fontSize: typography.h2.fontSize,
       fontFamily: fonts.bold,
       color: colors.text,
-      marginBottom: 8,
+      marginBottom: spacing.sm,
     },
     subtitle: {
-      fontSize: 14,
+      fontSize: typography.bodySmall.fontSize,
       fontFamily: fonts.regular,
       color: colors.text,
       opacity: 0.7,
@@ -46,6 +46,6 @@ const createStyles = (colors) =>
     backButton: {
       position: "absolute",
       top: 60,
-      left: 20,
+      left: spacing.xl,
     },
   });
