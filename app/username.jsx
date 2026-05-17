@@ -1,6 +1,7 @@
 import {View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, ActivityIndicator} from "react-native";
 import {router} from "expo-router";
 import {Colors} from "../constants/Color";
+import { fonts } from "../constants/Tokens";
 import { useState } from "react";
 import { updateMe } from "../services/userService";
 
@@ -68,7 +69,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 32,
-    fontFamily: "PoppinsBold",
+    fontFamily: fonts.bold,
     color: Colors.light.text,
     textAlign: "center",
     lineHeight: 40,
@@ -76,7 +77,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 14,
-    fontFamily: "PoppinsRegular",
+    fontFamily: fonts.regular,
     color: Colors.light.text,
     opacity: 0.7,
     textAlign: "center",
@@ -93,7 +94,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     paddingHorizontal: 18,
     fontSize: 15,
-    fontFamily: "PoppinsRegular",
+    fontFamily: fonts.regular,
     color: Colors.light.text,
     marginBottom: 14,
   },
@@ -106,13 +107,13 @@ const styles = StyleSheet.create({
   },
   primaryButtonText:{
     fontSize:17,
-    fontFamily: "PoppinsSemiBold",
+    fontFamily: fonts.semiBold,
     color:Colors.light.background,
   },
 
   accent:{
     color: Colors.light.accent,
-    fontFamily: "PoppinsSemiBold",
+    fontFamily: fonts.semiBold,
   },
 
   disabledButton: {

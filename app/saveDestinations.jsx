@@ -12,7 +12,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { ArrowLeft } from "phosphor-react-native";
 import { Colors } from "../constants/Color";
-import { spacing, radius, iconSize, typography } from "../constants/Tokens";
+import { spacing, radius, iconSize, typography, fonts } from "../constants/Tokens";
 import {
   upsertDestination,
   createDestination,
@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
   },
   title: {
     ...typography.body,
-    fontFamily: "PoppinsSemiBold",
+    fontFamily: fonts.semiBold,
     color: Colors.light.text,
   },
   form: {
@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
   },
   saveBtnText: {
     ...typography.body,
-    fontFamily: "PoppinsSemiBold",
+    fontFamily: fonts.semiBold,
     color: Colors.light.background,
   },
   deleteBtn: {
@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
   },
   deleteBtnText: {
     ...typography.body,
-    fontFamily: "PoppinsSemiBold",
+    fontFamily: fonts.semiBold,
     color: Colors.light.primary,
   },
 });

@@ -1,7 +1,7 @@
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import { MapPin, NavigationArrow } from "phosphor-react-native";
 import { Colors } from "../../constants/Color";
-import { spacing, radius, typography } from "../../constants/Tokens";
+import { spacing, radius, typography, fonts } from "../../constants/Tokens";
 
 export default function DestinationCard({ place, onConfirm, onCancel }) {
   return (
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
   },
   name: {
     ...typography.body,
-    fontFamily: "PoppinsSemiBold",
+    fontFamily: fonts.semiBold,
     color: Colors.light.text,
   },
   address: {
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
   },
   backText: {
     ...typography.body,
-    fontFamily: "PoppinsSemiBold",
+    fontFamily: fonts.semiBold,
     color: Colors.light.primary,
   },
   goBtn: {
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   },
   goText: {
     ...typography.body,
-    fontFamily: "PoppinsSemiBold",
+    fontFamily: fonts.semiBold,
     color: Colors.light.background,
   },
 });

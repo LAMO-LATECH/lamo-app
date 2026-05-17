@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import { Colors } from "../constants/Color";
+import { fonts } from "../constants/Tokens";
 import { ArrowLeft } from "phosphor-react-native";
 import { router } from "expo-router";
 
@@ -28,13 +29,13 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 32,
-    fontFamily: "PoppinsBold",
+    fontFamily: fonts.bold,
     color: Colors.light.text,
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 14,
-    fontFamily: "PoppinsRegular",
+    fontFamily: fonts.regular,
     color: Colors.light.text,
     opacity: 0.7,
     textAlign: "center",
@@ -46,7 +47,7 @@ const styles = StyleSheet.create({
   },
   backText: {
     fontSize: 22,
-    fontFamily: "PoppinsBold",
+    fontFamily: fonts.bold,
     color: Colors.light.text,
   },
 });

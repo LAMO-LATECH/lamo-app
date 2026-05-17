@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, ScrollView } from "react-native";
 import { Colors } from "../../constants/Color";
+import { fonts } from "../../constants/Tokens";
 import { Trophy, Coffee, Car, Leaf } from "phosphor-react-native";
 
 const REWARDS = [
@@ -102,18 +103,18 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontFamily: "PoppinsBold",
+    fontFamily: fonts.bold,
     color: Colors.light.text,
     marginBottom: 16,
   },
   pointsNumber: {
     fontSize: 48,
-    fontFamily: "PoppinsBold",
+    fontFamily: fonts.bold,
     color: Colors.light.text,
   },
   pointsLabel: {
     fontSize: 14,
-    fontFamily: "PoppinsRegular",
+    fontFamily: fonts.regular,
     color: Colors.light.text,
     opacity: 0.6,
     marginBottom: 28,
@@ -143,12 +144,12 @@ const styles = StyleSheet.create({
   },
   tierBadgeText: {
     fontSize: 13,
-    fontFamily: "PoppinsSemiBold",
+    fontFamily: fonts.semiBold,
     color: "#FFFFFF",
   },
   tierProgressText: {
     fontSize: 13,
-    fontFamily: "PoppinsRegular",
+    fontFamily: fonts.regular,
     color: Colors.light.text,
     opacity: 0.6,
   },
@@ -170,13 +171,13 @@ const styles = StyleSheet.create({
   },
   tierLabel: {
     fontSize: 12,
-    fontFamily: "PoppinsRegular",
+    fontFamily: fonts.regular,
     color: Colors.light.text,
     opacity: 0.6,
   },
   sectionHeader: {
     fontSize: 12,
-    fontFamily: "PoppinsSemiBold",
+    fontFamily: fonts.semiBold,
     color: Colors.light.text,
     opacity: 0.5,
     letterSpacing: 1.5,
@@ -205,12 +206,12 @@ const styles = StyleSheet.create({
   },
   rewardTitle: {
     fontSize: 16,
-    fontFamily: "PoppinsSemiBold",
+    fontFamily: fonts.semiBold,
     color: Colors.light.text,
   },
   rewardPartner: {
     fontSize: 13,
-    fontFamily: "PoppinsRegular",
+    fontFamily: fonts.regular,
     color: Colors.light.text,
     opacity: 0.6,
   },
@@ -224,7 +225,7 @@ const styles = StyleSheet.create({
   },
   pointsPillText: {
     fontSize: 13,
-    fontFamily: "PoppinsSemiBold",
+    fontFamily: fonts.semiBold,
     color: "#FFFFFF",
   },
 });

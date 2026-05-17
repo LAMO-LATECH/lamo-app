@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { useAuth } from "../../contexts/AuthContext";
 import { Colors } from "../../constants/Color";
+import { fonts } from "../../constants/Tokens";
 import { getMe, updateMe, deleteAccount } from "../../services/userService";
 import { useState, useEffect } from "react";
 import { router } from "expo-router";
@@ -264,17 +265,17 @@ const styles = StyleSheet.create({
   },
   avatarText: {
     fontSize: 36,
-    fontFamily: "PoppinsBold",
+    fontFamily: fonts.bold,
     color: Colors.light.background,
   },
   name: {
     fontSize: 26,
-    fontFamily: "PoppinsBold",
+    fontFamily: fonts.bold,
     color: Colors.light.text,
   },
   username: {
     fontSize: 14,
-    fontFamily: "PoppinsRegular",
+    fontFamily: fonts.regular,
     color: Colors.light.text,
     opacity: 0.6,
     marginTop: 2,
@@ -291,7 +292,7 @@ const styles = StyleSheet.create({
   },
   badgeText: {
     fontSize: 13,
-    fontFamily: "PoppinsSemiBold",
+    fontFamily: fonts.semiBold,
     color: Colors.light.accent,
   },
   statsContainer: {
@@ -322,7 +323,7 @@ const styles = StyleSheet.create({
   },
   statNumber: {
     fontSize: 20,
-    fontFamily: "PoppinsBold",
+    fontFamily: fonts.bold,
     color: Colors.light.text,
     opacity: 0.6,
   },
@@ -344,18 +345,18 @@ const styles = StyleSheet.create({
   },
   actionText: {
     fontSize: 16,
-    fontFamily: "PoppinsSemiBold",
+    fontFamily: fonts.semiBold,
     color: "#FFFFFF",
   },
   statLabel: {
     fontSize: 12,
-    fontFamily: "PoppinsRegular",
+    fontFamily: fonts.regular,
     color: Colors.light.text,
     opacity: 0.6,
   },
   title: {
     fontSize: 24,
-    fontFamily: "PoppinsBold",
+    fontFamily: fonts.bold,
     color: Colors.light.text,
     marginBottom: 32,
   },
@@ -369,7 +370,7 @@ const styles = StyleSheet.create({
   },
   logoutText: {
     fontSize: 16,
-    fontFamily: "PoppinsSemiBold",
+    fontFamily: fonts.semiBold,
     color: "#FFFFFF",
   },
   deleteButton: {
@@ -384,12 +385,12 @@ const styles = StyleSheet.create({
   },
   deleteText: {
     fontSize: 16,
-    fontFamily: "PoppinsSemiBold",
+    fontFamily: fonts.semiBold,
     color: "#D9534F",
   },
   deleteWarning: {
     fontSize: 14,
-    fontFamily: "PoppinsRegular",
+    fontFamily: fonts.regular,
     color: Colors.light.text,
     opacity: 0.7,
     textAlign: "center",
@@ -405,7 +406,7 @@ const styles = StyleSheet.create({
   },
   deleteConfirmText: {
     fontSize: 16,
-    fontFamily: "PoppinsSemiBold",
+    fontFamily: fonts.semiBold,
     color: "#FFFFFF",
   },
   modalOverlay: {
@@ -421,7 +422,7 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     fontSize: 24,
-    fontFamily: "PoppinsBold",
+    fontFamily: fonts.bold,
     color: Colors.light.text,
     marginBottom: 18,
     textAlign: "center",
@@ -435,7 +436,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     paddingHorizontal: 18,
     fontSize: 15,
-    fontFamily: "PoppinsRegular",
+    fontFamily: fonts.regular,
     color: Colors.light.text,
     marginBottom: 16,
   },
@@ -449,13 +450,13 @@ const styles = StyleSheet.create({
   },
   saveButtonText: {
     fontSize: 16,
-    fontFamily: "PoppinsSemiBold",
+    fontFamily: fonts.semiBold,
     color: Colors.light.background,
   },
   cancelText: {
     textAlign: "center",
     fontSize: 15,
-    fontFamily: "PoppinsSemiBold",
+    fontFamily: fonts.semiBold,
     color: Colors.light.text,
     opacity: 0.7,
   },

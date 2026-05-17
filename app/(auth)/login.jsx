@@ -12,6 +12,7 @@ import {
 import { router } from "expo-router";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { Colors } from "../../constants/Color";
+import { fonts } from "../../constants/Tokens";
 import { useAuth } from "../../contexts/AuthContext";
 import LottieView from "lottie-react-native";
 
@@ -163,7 +164,7 @@ const styles = StyleSheet.create({
 
   title: {
     fontSize: 32,
-    fontFamily: "PoppinsBold",
+    fontFamily: fonts.bold,
     color: Colors.light.text,
     textAlign: "center",
     lineHeight: 40,
@@ -172,7 +173,7 @@ const styles = StyleSheet.create({
 
   subtitle: {
     fontSize: 14,
-    fontFamily: "PoppinsRegular",
+    fontFamily: fonts.regular,
     color: Colors.light.text,
     opacity: 0.7,
     textAlign: "center",
@@ -183,7 +184,7 @@ const styles = StyleSheet.create({
 
   accent: {
     color: Colors.light.accent,
-    fontFamily: "PoppinsSemiBold",
+    fontFamily: fonts.semiBold,
   },
 
   form: {
@@ -199,7 +200,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     paddingHorizontal: 18,
     fontSize: 15,
-    fontFamily: "PoppinsRegular",
+    fontFamily: fonts.regular,
     color: Colors.light.text,
     marginBottom: 14,
   },
@@ -220,7 +221,7 @@ const styles = StyleSheet.create({
 
   primaryButtonText: {
     fontSize: 17,
-    fontFamily: "PoppinsSemiBold",
+    fontFamily: fonts.semiBold,
     color: Colors.light.background,
   },
 
@@ -237,19 +238,19 @@ const styles = StyleSheet.create({
 
   googleButtonText: {
     fontSize: 15,
-    fontFamily: "PoppinsSemiBold",
+    fontFamily: fonts.semiBold,
     color: Colors.light.text,
   },
 
   linkText: {
     textAlign: "center",
     fontSize: 15,
-    fontFamily: "PoppinsRegular",
+    fontFamily: fonts.regular,
     color: Colors.light.text,
   },
 
   linkAccent: {
-    fontFamily: "PoppinsSemiBold",
+    fontFamily: fonts.semiBold,
     color: Colors.light.primary,
   },
 
@@ -269,13 +270,13 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 16,
     fontSize: 15,
-    fontFamily: "PoppinsRegular",
+    fontFamily: fonts.regular,
     color: Colors.light.text,
   },
 
   eyeText: {
     fontSize: 13,
-    fontFamily: "PoppinsSemiBold",
+    fontFamily: fonts.semiBold,
     color: Colors.light.accent,
   },
 

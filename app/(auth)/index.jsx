@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { router } from "expo-router";
 import LottieView from "lottie-react-native";
 import { Colors } from "../../constants/Color";
+import { fonts } from "../../constants/Tokens";
 import {useState} from "react";
 import LegalModal from "../../components/LegalModal";
 
@@ -119,7 +120,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 14,
-    fontFamily: "PoppinsRegular",
+    fontFamily: fonts.regular,
     color: Colors.light.text,
     opacity: 0.7,
     textAlign: "center",
@@ -129,7 +130,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 34,
-    fontFamily: "PoppinsBold",
+    fontFamily: fonts.bold,
     color: Colors.light.text,
     textAlign: "center",
     marginBottom: 28,
@@ -137,11 +138,11 @@ const styles = StyleSheet.create({
   },
   accent: {
     color: Colors.light.accent,
-    fontFamily: "PoppinsBold",
+    fontFamily: fonts.bold,
   },
   terms: {
     fontSize: 12,
-    fontFamily: "PoppinsRegular",
+    fontFamily: fonts.regular,
     color: Colors.light.text,
     opacity: 0.6,
     textAlign: "center",
@@ -158,17 +159,17 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   primaryButtonText: {
-    fontFamily: "PoppinsSemiBold",
+    fontFamily: fonts.semiBold,
     color: Colors.light.background,
     fontSize: 17,
   },
   secondaryLink: {
-    fontFamily: "PoppinsSemiBold",
+    fontFamily: fonts.semiBold,
     color: Colors.light.text,
     fontSize: 17,
   },
   legalLink:{
     color:Colors.light.primary,
-    fontFamily:"PoppinsSemiBold",
+    fontFamily:fonts.semiBold,
   },
 });

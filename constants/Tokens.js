@@ -1,3 +1,9 @@
+export const fonts = {
+  regular: "PoppinsRegular",
+  semiBold: "PoppinsSemiBold",
+  bold: "PoppinsBold",
+};
+
 export const spacing = {
   xs: 4,
   sm: 8,

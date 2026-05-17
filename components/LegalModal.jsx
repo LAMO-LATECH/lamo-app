@@ -1,5 +1,6 @@
 import{Modal, View, Text, StyleSheet, TouchableOpacity, ScrollView}from "react-native";
 import {Colors}from"../constants/Color";
+import { fonts } from "../constants/Tokens";
 
 export default function LegalModal({visible, type, onClose}){
     const isTerms = type === "terms";
@@ -45,7 +46,7 @@ const styles = StyleSheet.create({
     },
     title:{
         fontSize:24,
-        fontFamily: "PoppinsBold",
+        fontFamily: fonts.bold,
         color:Colors.light.text,
         marginBottom:16,
     },
@@ -54,7 +55,7 @@ const styles = StyleSheet.create({
     },
     body:{
         fontSize:14,
-        fontFamily:"PoppinsRegular",
+        fontFamily:fonts.regular,
         color:Colors.light.text,
         lineHeight:22,
         opacity:0.75,
@@ -67,7 +68,7 @@ const styles = StyleSheet.create({
     },
     buttonText:{
         color:Colors.light.background,
-        fontFamily:"PoppinsSemiBold",
+        fontFamily:fonts.semiBold,
         fontSize:16,
     },
 });
