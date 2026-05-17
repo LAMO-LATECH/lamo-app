@@ -10,6 +10,8 @@ export const Colors = {
     surfaceAlt: "#F3EDE5",
     surfaceDark: "#2a2a2a",
     border: "#e8e4e0",
+    danger: "#D9534F",
+    overlay: "rgba(0,0,0,0.35)",
   },
 
   dark: {
@@ -19,6 +21,11 @@ export const Colors = {
     secondary: "#ff6a2b",
     accent: "#e2a948",
     inactive: "#999999",
+    surface: "#1a1d1e",
+    surfaceAlt: "#252829",
+    surfaceDark: "#3a3d3e",
+    border: "#2e3133",
+    danger: "#D9534F",
+    overlay: "rgba(0,0,0,0.55)",
   },
-
 };

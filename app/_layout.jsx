@@ -1,16 +1,19 @@
 import { useState, useCallback, useEffect } from "react";
 import { Stack, Redirect } from "expo-router";
 import { View } from "react-native";
+import { StatusBar } from "expo-status-bar";
 import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
 import AnimatedSplash from "../components/AnimatedSplash";
 import { AuthProvider, useAuth } from "../contexts/AuthContext";
 import { DestinationProvider } from "../contexts/DestinationContext";
+import { ThemeProvider, useTheme } from "../contexts/ThemeContext";
 
 SplashScreen.preventAutoHideAsync();
 
 function RootNavigator() {
   const { isAuthenticated, isLoading } = useAuth();
+  const { colors, isDark } = useTheme();
   const [splashAnimDone, setSplashAnimDone] = useState(false);
 
   const [fontsLoaded] = useFonts({
@@ -41,7 +44,8 @@ function RootNavigator() {
   }
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
+      <StatusBar style={isDark ? "light" : "dark"} />
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="/rideHistory" />
         <Stack.Screen name="(tabs)" redirect={!isAuthenticated} />
@@ -79,11 +83,13 @@ function RootNavigator() {
 
 const RootLayout = () => {
   return (
-    <AuthProvider>
-      <DestinationProvider>
-        <RootNavigator />
-      </DestinationProvider>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <DestinationProvider>
+          <RootNavigator />
+        </DestinationProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 };
 

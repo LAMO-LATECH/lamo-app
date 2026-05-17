@@ -12,7 +12,6 @@ import {
   Alert,
 } from "react-native";
 import { useState, useEffect } from "react";
-import { Colors } from "../constants/Color";
 import { fonts } from "../constants/Tokens";
 import {
   getPreferences,
@@ -23,9 +22,18 @@ import { useAuth } from "../contexts/AuthContext";
 import { CaretRight, ArrowLeft } from "phosphor-react-native";
 import { router } from "expo-router";
 import LegalModal from "../components/LegalModal";
+import { useTheme } from "../contexts/ThemeContext";
+
+const APPEARANCE_OPTIONS = [
+  { value: "system", label: "System Default" },
+  { value: "light", label: "Light" },
+  { value: "dark", label: "Dark" },
+];
 
 const Settings = () => {
   const { logout } = useAuth();
+  const { colors, preference, setThemePreference } = useTheme();
+  const styles = createStyles(colors);
 
   const [loading, setLoading] = useState(true);
   const [avoidTolls, setAvoidTolls] = useState(false);
@@ -82,7 +90,7 @@ const Settings = () => {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator color={Colors.light.primary} />
+        <ActivityIndicator color={colors.primary} />
       </View>
     );
   }
@@ -90,11 +98,33 @@ const Settings = () => {
   return (
     <View style={styles.container}>
       <Pressable onPress={() => router.back()} style={styles.backButton}>
-        <ArrowLeft size={24} color={Colors.light.text} weight="bold" />
+        <ArrowLeft size={24} color={colors.text} weight="bold" />
       </Pressable>
 
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <Text style={styles.title}>Settings</Text>
+
+        <Text style={styles.sectionHeader}>Appearance</Text>
+
+        {APPEARANCE_OPTIONS.map((option) => (
+          <Pressable
+            key={option.value}
+            style={styles.toggleRow}
+            onPress={() => setThemePreference(option.value)}
+          >
+            <Text style={styles.toggleLabel}>{option.label}</Text>
+            <View
+              style={[
+                styles.radioOuter,
+                preference === option.value && styles.radioOuterSelected,
+              ]}
+            >
+              {preference === option.value && (
+                <View style={styles.radioInner} />
+              )}
+            </View>
+          </Pressable>
+        ))}
 
         <Text style={styles.sectionHeader}>Preferences</Text>
 
@@ -105,7 +135,7 @@ const Settings = () => {
             onValueChange={() =>
               handleToggle("avoidTolls", avoidTolls, setAvoidTolls)
             }
-            trackColor={{ false: "#E8E1DA", true: Colors.light.primary }}
+            trackColor={{ false: colors.border, true: colors.primary }}
             thumbColor="#FFFFFF"
           />
         </View>
@@ -117,7 +147,7 @@ const Settings = () => {
             onValueChange={() =>
               handleToggle("avoidHighways", avoidHighways, setAvoidHighways)
             }
-            trackColor={{ false: "#E8E1DA", true: Colors.light.primary }}
+            trackColor={{ false: colors.border, true: colors.primary }}
             thumbColor="#FFFFFF"
           />
         </View>
@@ -131,7 +161,7 @@ const Settings = () => {
             onValueChange={() =>
               handleToggle("notifications", notifications, setNotifications)
             }
-            trackColor={{ false: "#E8E1DA", true: Colors.light.primary }}
+            trackColor={{ false: colors.border, true: colors.primary }}
             thumbColor="#FFFFFF"
           />
         </View>
@@ -185,7 +215,7 @@ const Settings = () => {
               <TextInput
                 style={styles.input}
                 placeholder='Type "confirm"'
-                placeholderTextColor={Colors.light.inactive}
+                placeholderTextColor={colors.inactive}
                 value={confirmText}
                 onChangeText={setConfirmText}
                 autoCapitalize="none"
@@ -226,164 +256,183 @@ const Settings = () => {
 };
 export default Settings;
 
-const styles = StyleSheet.create({
-  loadingContainer: {
-    flex: 1,
-    backgroundColor: Colors.light.background,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  container: {
-    flex: 1,
-    backgroundColor: Colors.light.background,
-  },
-  contentContainer: {
-    paddingHorizontal: 24,
-    paddingTop: 100,
-    paddingBottom: 32,
-  },
-  backButton: {
-    position: "absolute",
-    top: 60,
-    left: 20,
-    zIndex: 10,
-  },
-  title: {
-    fontSize: 28,
-    fontFamily: fonts.bold,
-    color: Colors.light.text,
-    marginBottom: 24,
-  },
-  sectionHeader: {
-    fontSize: 14,
-    fontFamily: fonts.semiBold,
-    color: Colors.light.text,
-    opacity: 0.5,
-    textTransform: "uppercase",
-    marginTop: 20,
-    marginBottom: 10,
-  },
-  toggleRow: {
-    backgroundColor: "#FFFFFF",
-    borderWidth: 1,
-    borderColor: "#E8E1DA",
-    borderRadius: 18,
-    paddingVertical: 16,
-    paddingHorizontal: 18,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 10,
-  },
-  toggleLabel: {
-    fontSize: 16,
-    fontFamily: fonts.semiBold,
-    color: Colors.light.text,
-  },
-  accountRow: {
-    backgroundColor: Colors.light.text,
-    borderRadius: 18,
-    paddingVertical: 16,
-    paddingHorizontal: 18,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 10,
-  },
-  accountRowTitle: {
-    fontSize: 16,
-    fontFamily: fonts.semiBold,
-    color: "#FFFFFF",
-  },
-  deleteRow: {
-    backgroundColor: "#D9534F",
-    borderRadius: 18,
-    paddingVertical: 16,
-    paddingHorizontal: 18,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 10,
-  },
-  deleteRowTitle: {
-    fontSize: 16,
-    fontFamily: fonts.semiBold,
-    color: "#fff",
-  },
-  deleteRowSubtitle: {
-    fontSize: 13,
-    fontFamily: fonts.regular,
-    color: "#fff",
-    opacity: 0.6,
-    marginTop: 2,
-  },
-  accountRowSubtitle: {
-    fontSize: 13,
-    fontFamily: fonts.regular,
-    color: "#FFFFFF",
-    opacity: 0.6,
-    marginTop: 2,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.35)",
-    justifyContent: "center",
-    paddingHorizontal: 24,
-  },
-  modalCard: {
-    backgroundColor: Colors.light.background,
-    borderRadius: 24,
-    padding: 24,
-  },
-  modalTitle: {
-    fontSize: 24,
-    fontFamily: fonts.bold,
-    color: Colors.light.text,
-    marginBottom: 18,
-    textAlign: "center",
-  },
-  deleteWarning: {
-    fontSize: 14,
-    fontFamily: fonts.regular,
-    color: Colors.light.text,
-    opacity: 0.7,
-    textAlign: "center",
-    marginBottom: 18,
-  },
-  input: {
-    width: "100%",
-    backgroundColor: "#FFFFFF",
-    borderWidth: 1,
-    borderColor: "#E8E1DA",
-    borderRadius: 18,
-    paddingVertical: 16,
-    paddingHorizontal: 18,
-    fontSize: 15,
-    fontFamily: fonts.regular,
-    color: Colors.light.text,
-    marginBottom: 16,
-  },
-  deleteConfirmButton: {
-    width: "100%",
-    backgroundColor: "#D9534F",
-    paddingVertical: 16,
-    borderRadius: 20,
-    alignItems: "center",
-    marginBottom: 14,
-  },
-  deleteConfirmText: {
-    fontSize: 16,
-    fontFamily: fonts.semiBold,
-    color: "#FFFFFF",
-  },
-  cancelText: {
-    textAlign: "center",
-    fontSize: 15,
-    fontFamily: fonts.semiBold,
-    color: Colors.light.text,
-    opacity: 0.7,
-  },
-  disabledButton: {
-    opacity: 0.6,
-  },
-});
+const createStyles = (colors) =>
+  StyleSheet.create({
+    loadingContainer: {
+      flex: 1,
+      backgroundColor: colors.background,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    contentContainer: {
+      paddingHorizontal: 24,
+      paddingTop: 100,
+      paddingBottom: 32,
+    },
+    backButton: {
+      position: "absolute",
+      top: 60,
+      left: 20,
+      zIndex: 10,
+    },
+    title: {
+      fontSize: 28,
+      fontFamily: fonts.bold,
+      color: colors.text,
+      marginBottom: 24,
+    },
+    sectionHeader: {
+      fontSize: 14,
+      fontFamily: fonts.semiBold,
+      color: colors.text,
+      opacity: 0.5,
+      textTransform: "uppercase",
+      marginTop: 20,
+      marginBottom: 10,
+    },
+    toggleRow: {
+      backgroundColor: colors.surface,
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: 18,
+      paddingVertical: 16,
+      paddingHorizontal: 18,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      marginBottom: 10,
+    },
+    toggleLabel: {
+      fontSize: 16,
+      fontFamily: fonts.semiBold,
+      color: colors.text,
+    },
+    radioOuter: {
+      width: 22,
+      height: 22,
+      borderRadius: 11,
+      borderWidth: 2,
+      borderColor: colors.border,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    radioOuterSelected: {
+      borderColor: colors.primary,
+    },
+    radioInner: {
+      width: 12,
+      height: 12,
+      borderRadius: 6,
+      backgroundColor: colors.primary,
+    },
+    accountRow: {
+      backgroundColor: colors.surfaceDark,
+      borderRadius: 18,
+      paddingVertical: 16,
+      paddingHorizontal: 18,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      marginBottom: 10,
+    },
+    accountRowTitle: {
+      fontSize: 16,
+      fontFamily: fonts.semiBold,
+      color: "#FFFFFF",
+    },
+    deleteRow: {
+      backgroundColor: colors.danger,
+      borderRadius: 18,
+      paddingVertical: 16,
+      paddingHorizontal: 18,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      marginBottom: 10,
+    },
+    deleteRowTitle: {
+      fontSize: 16,
+      fontFamily: fonts.semiBold,
+      color: "#fff",
+    },
+    deleteRowSubtitle: {
+      fontSize: 13,
+      fontFamily: fonts.regular,
+      color: "#fff",
+      opacity: 0.6,
+      marginTop: 2,
+    },
+    accountRowSubtitle: {
+      fontSize: 13,
+      fontFamily: fonts.regular,
+      color: "#FFFFFF",
+      opacity: 0.6,
+      marginTop: 2,
+    },
+    modalOverlay: {
+      flex: 1,
+      backgroundColor: colors.overlay,
+      justifyContent: "center",
+      paddingHorizontal: 24,
+    },
+    modalCard: {
+      backgroundColor: colors.background,
+      borderRadius: 24,
+      padding: 24,
+    },
+    modalTitle: {
+      fontSize: 24,
+      fontFamily: fonts.bold,
+      color: colors.text,
+      marginBottom: 18,
+      textAlign: "center",
+    },
+    deleteWarning: {
+      fontSize: 14,
+      fontFamily: fonts.regular,
+      color: colors.text,
+      opacity: 0.7,
+      textAlign: "center",
+      marginBottom: 18,
+    },
+    input: {
+      width: "100%",
+      backgroundColor: colors.surface,
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: 18,
+      paddingVertical: 16,
+      paddingHorizontal: 18,
+      fontSize: 15,
+      fontFamily: fonts.regular,
+      color: colors.text,
+      marginBottom: 16,
+    },
+    deleteConfirmButton: {
+      width: "100%",
+      backgroundColor: colors.danger,
+      paddingVertical: 16,
+      borderRadius: 20,
+      alignItems: "center",
+      marginBottom: 14,
+    },
+    deleteConfirmText: {
+      fontSize: 16,
+      fontFamily: fonts.semiBold,
+      color: "#FFFFFF",
+    },
+    cancelText: {
+      textAlign: "center",
+      fontSize: 15,
+      fontFamily: fonts.semiBold,
+      color: colors.text,
+      opacity: 0.7,
+    },
+    disabledButton: {
+      opacity: 0.6,
+    },
+  });

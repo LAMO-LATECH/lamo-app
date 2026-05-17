@@ -3,12 +3,12 @@ import { View, Pressable, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { ArrowLeft } from "phosphor-react-native";
-import { Colors } from "../constants/Color";
 import { spacing, iconSize } from "../constants/Tokens";
 import SearchBar from "../components/home/SearchBar";
 import SuggestionList from "../components/search/SuggestionList";
 import useMapboxSearch from "../hooks/useMapboxSearch";
 import { useDestination } from "../contexts/DestinationContext";
+import { useTheme } from "../contexts/ThemeContext";
 
 export default function SearchScreen() {
   const router = useRouter();
@@ -16,6 +16,8 @@ export default function SearchScreen() {
   const insets = useSafeAreaInsets();
   const search = useMapboxSearch();
   const { selectDestination } = useDestination();
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
 
   useEffect(() => {
     if (q) search.updateQuery(q);
@@ -40,7 +42,7 @@ export default function SearchScreen() {
         <Pressable onPress={() => router.back()} hitSlop={8}>
           <ArrowLeft
             size={iconSize.md}
-            color={Colors.light.text}
+            color={colors.text}
             weight="bold"
           />
         </Pressable>
@@ -64,19 +66,20 @@ export default function SearchScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.light.background,
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: spacing.xl,
-    paddingVertical: spacing.md,
-    gap: spacing.md,
-  },
-  barWrapper: {
-    flex: 1,
-  },
-});
+const createStyles = (colors) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    header: {
+      flexDirection: "row",
+      alignItems: "center",
+      paddingHorizontal: spacing.xl,
+      paddingVertical: spacing.md,
+      gap: spacing.md,
+    },
+    barWrapper: {
+      flex: 1,
+    },
+  });

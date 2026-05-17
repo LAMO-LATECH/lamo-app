@@ -10,7 +10,6 @@ import {
   Alert,
 } from "react-native";
 import { useAuth } from "../../contexts/AuthContext";
-import { Colors } from "../../constants/Color";
 import { fonts } from "../../constants/Tokens";
 import { getMe, updateMe } from "../../services/userService";
 import { useState, useEffect } from "react";
@@ -22,9 +21,12 @@ import {
   GearSix,
   CaretRight,
 } from "phosphor-react-native";
+import { useTheme } from "../../contexts/ThemeContext";
 
 const Profile = () => {
   const { logout } = useAuth();
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [editVisible, setEditVisible] = useState(false);
@@ -34,12 +36,10 @@ const Profile = () => {
   useEffect(() => {
     const loadUser = async () => {
       try {
-        // Fetch user data on mount
         const data = await getMe();
         setUser(data.user || data);
         setNewUsername((data.user || data)?.username || "");
       } catch (error) {
-        // Handle error
         console.error("Failed to load user data:", error);
       } finally {
         setLoading(false);
@@ -73,7 +73,7 @@ const Profile = () => {
       contentContainerStyle={styles.contentContainer}
     >
       {loading ? (
-        <ActivityIndicator color={Colors.light.primary} />
+        <ActivityIndicator color={colors.primary} />
       ) : (
         <>
           <View style={styles.avatar}>
@@ -87,7 +87,7 @@ const Profile = () => {
           <Text style={styles.username}>{user?.email || "@angeleno"}</Text>
 
           <View style={styles.badge}>
-            <Trophy size={14} weight="fill" color={Colors.light.accent} />
+            <Trophy size={14} weight="fill" color={colors.accent} />
             <Text style={styles.badgeText}>Silver Driver</Text>
           </View>
 
@@ -151,7 +151,7 @@ const Profile = () => {
                 <TextInput
                   style={styles.input}
                   placeholder="Username"
-                  placeholderTextColor={Colors.light.inactive}
+                  placeholderTextColor={colors.inactive}
                   value={newUsername}
                   onChangeText={setNewUsername}
                   autoCapitalize="none"
@@ -178,188 +178,183 @@ const Profile = () => {
 };
 export default Profile;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.light.background,
-  },
-  contentContainer: {
-    alignItems: "center",
-    paddingHorizontal: 24,
-    paddingTop: 65,
-    paddingBottom: 32,
-  },
-  avatar: {
-    width: 92,
-    height: 92,
-    borderRadius: 46,
-    backgroundColor: Colors.light.accent,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 16,
-  },
-  avatarText: {
-    fontSize: 36,
-    fontFamily: fonts.bold,
-    color: Colors.light.background,
-  },
-  name: {
-    fontSize: 26,
-    fontFamily: fonts.bold,
-    color: Colors.light.text,
-  },
-  username: {
-    fontSize: 14,
-    fontFamily: fonts.regular,
-    color: Colors.light.text,
-    opacity: 0.6,
-    marginTop: 2,
-  },
-  badge: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    marginTop: 14,
-    backgroundColor: "#e2a94829",
-    paddingHorizontal: 18,
-    paddingVertical: 6,
-    borderRadius: 22,
-  },
-  badgeText: {
-    fontSize: 13,
-    fontFamily: fonts.semiBold,
-    color: Colors.light.accent,
-  },
-  statsContainer: {
-    width: "100%",
-    marginTop: 28,
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 12,
-    justifyContent: "center",
-  },
-  statCard: {
-    width: "48%",
-    backgroundColor: "#FFFFFF",
-    borderWidth: 1,
-    borderColor: "#E8E1DA",
-    borderRadius: 20,
-    paddingVertical: 22,
-    alignItems: "center",
-  },
-  statCardWide: {
-    width: "60%",
-    backgroundColor: "#FFFFFF",
-    borderWidth: 1,
-    borderColor: "#E8E1DA",
-    borderRadius: 20,
-    paddingVertical: 22,
-    alignItems: "center",
-  },
-  statNumber: {
-    fontSize: 20,
-    fontFamily: fonts.bold,
-    color: Colors.light.text,
-    opacity: 0.6,
-  },
-  actionRow: {
-    width: "100%",
-    marginTop: 12,
-    backgroundColor: Colors.light.text,
-    borderRadius: 18,
-    paddingVertical: 18,
-    paddingHorizontal: 18,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  actionLeft: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
-  actionText: {
-    fontSize: 16,
-    fontFamily: fonts.semiBold,
-    color: "#FFFFFF",
-  },
-  statLabel: {
-    fontSize: 12,
-    fontFamily: fonts.regular,
-    color: Colors.light.text,
-    opacity: 0.6,
-  },
-  title: {
-    fontSize: 24,
-    fontFamily: fonts.bold,
-    color: Colors.light.text,
-    marginBottom: 32,
-  },
-  logoutButton: {
-    width: "100%",
-    paddingVertical: 16,
-    borderRadius: 20,
-    alignItems: "center",
-    marginTop: 12,
-    backgroundColor: Colors.light.primary,
-  },
-  logoutText: {
-    fontSize: 16,
-    fontFamily: fonts.semiBold,
-    color: "#FFFFFF",
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.35)",
-    justifyContent: "center",
-    paddingHorizontal: 24,
-  },
-  modalCard: {
-    backgroundColor: Colors.light.background,
-    borderRadius: 24,
-    padding: 24,
-  },
-  modalTitle: {
-    fontSize: 24,
-    fontFamily: fonts.bold,
-    color: Colors.light.text,
-    marginBottom: 18,
-    textAlign: "center",
-  },
-  input: {
-    width: "100%",
-    backgroundColor: "#FFFFFF",
-    borderWidth: 1,
-    borderColor: "#E8E1DA",
-    borderRadius: 18,
-    paddingVertical: 16,
-    paddingHorizontal: 18,
-    fontSize: 15,
-    fontFamily: fonts.regular,
-    color: Colors.light.text,
-    marginBottom: 16,
-  },
-  saveButton: {
-    width: "100%",
-    backgroundColor: Colors.light.primary,
-    paddingVertical: 16,
-    borderRadius: 20,
-    alignItems: "center",
-    marginBottom: 14,
-  },
-  saveButtonText: {
-    fontSize: 16,
-    fontFamily: fonts.semiBold,
-    color: Colors.light.background,
-  },
-  cancelText: {
-    textAlign: "center",
-    fontSize: 15,
-    fontFamily: fonts.semiBold,
-    color: Colors.light.text,
-    opacity: 0.7,
-  },
-  disabledButton: {
-    opacity: 0.6,
-  },
-});
+const createStyles = (colors) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    contentContainer: {
+      alignItems: "center",
+      paddingHorizontal: 24,
+      paddingTop: 65,
+      paddingBottom: 32,
+    },
+    avatar: {
+      width: 92,
+      height: 92,
+      borderRadius: 46,
+      backgroundColor: colors.accent,
+      alignItems: "center",
+      justifyContent: "center",
+      marginBottom: 16,
+    },
+    avatarText: {
+      fontSize: 36,
+      fontFamily: fonts.bold,
+      color: colors.background,
+    },
+    name: {
+      fontSize: 26,
+      fontFamily: fonts.bold,
+      color: colors.text,
+    },
+    username: {
+      fontSize: 14,
+      fontFamily: fonts.regular,
+      color: colors.text,
+      opacity: 0.6,
+      marginTop: 2,
+    },
+    badge: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 6,
+      marginTop: 14,
+      backgroundColor: colors.surfaceAlt,
+      paddingHorizontal: 18,
+      paddingVertical: 6,
+      borderRadius: 22,
+    },
+    badgeText: {
+      fontSize: 13,
+      fontFamily: fonts.semiBold,
+      color: colors.accent,
+    },
+    statsContainer: {
+      width: "100%",
+      marginTop: 28,
+      flexDirection: "row",
+      flexWrap: "wrap",
+      gap: 12,
+      justifyContent: "center",
+    },
+    statCard: {
+      width: "48%",
+      backgroundColor: colors.surface,
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: 20,
+      paddingVertical: 22,
+      alignItems: "center",
+    },
+    statCardWide: {
+      width: "60%",
+      backgroundColor: colors.surface,
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: 20,
+      paddingVertical: 22,
+      alignItems: "center",
+    },
+    statNumber: {
+      fontSize: 20,
+      fontFamily: fonts.bold,
+      color: colors.text,
+      opacity: 0.6,
+    },
+    actionRow: {
+      width: "100%",
+      marginTop: 12,
+      backgroundColor: colors.surfaceDark,
+      borderRadius: 18,
+      paddingVertical: 18,
+      paddingHorizontal: 18,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+    },
+    actionLeft: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 12,
+    },
+    actionText: {
+      fontSize: 16,
+      fontFamily: fonts.semiBold,
+      color: "#FFFFFF",
+    },
+    statLabel: {
+      fontSize: 12,
+      fontFamily: fonts.regular,
+      color: colors.text,
+      opacity: 0.6,
+    },
+    logoutButton: {
+      width: "100%",
+      paddingVertical: 16,
+      borderRadius: 20,
+      alignItems: "center",
+      marginTop: 12,
+      backgroundColor: colors.primary,
+    },
+    logoutText: {
+      fontSize: 16,
+      fontFamily: fonts.semiBold,
+      color: "#FFFFFF",
+    },
+    modalOverlay: {
+      flex: 1,
+      backgroundColor: colors.overlay,
+      justifyContent: "center",
+      paddingHorizontal: 24,
+    },
+    modalCard: {
+      backgroundColor: colors.background,
+      borderRadius: 24,
+      padding: 24,
+    },
+    modalTitle: {
+      fontSize: 24,
+      fontFamily: fonts.bold,
+      color: colors.text,
+      marginBottom: 18,
+      textAlign: "center",
+    },
+    input: {
+      width: "100%",
+      backgroundColor: colors.surface,
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: 18,
+      paddingVertical: 16,
+      paddingHorizontal: 18,
+      fontSize: 15,
+      fontFamily: fonts.regular,
+      color: colors.text,
+      marginBottom: 16,
+    },
+    saveButton: {
+      width: "100%",
+      backgroundColor: colors.primary,
+      paddingVertical: 16,
+      borderRadius: 20,
+      alignItems: "center",
+      marginBottom: 14,
+    },
+    saveButtonText: {
+      fontSize: 16,
+      fontFamily: fonts.semiBold,
+      color: colors.background,
+    },
+    cancelText: {
+      textAlign: "center",
+      fontSize: 15,
+      fontFamily: fonts.semiBold,
+      color: colors.text,
+      opacity: 0.7,
+    },
+    disabledButton: {
+      opacity: 0.6,
+    },
+  });

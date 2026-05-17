@@ -13,13 +13,13 @@ import {
   ExpoSpeechRecognitionModule,
   useSpeechRecognitionEvent,
 } from "expo-speech-recognition";
-import { Colors } from "../constants/Color";
 import { spacing, typography } from "../constants/Tokens";
+import { useTheme } from "../contexts/ThemeContext";
 
 const RING_SIZE = 120;
 const RING_DURATION = 1800;
 
-function PulsingRing({ delay }) {
+function PulsingRing({ delay, colors }) {
   const scale = useSharedValue(1);
   const opacity = useSharedValue(0.5);
 
@@ -53,10 +53,26 @@ function PulsingRing({ delay }) {
     opacity: opacity.value,
   }));
 
-  return <Animated.View style={[styles.ring, animatedStyle]} />;
+  return (
+    <Animated.View
+      style={[
+        {
+          position: "absolute",
+          width: RING_SIZE,
+          height: RING_SIZE,
+          borderRadius: RING_SIZE / 2,
+          borderWidth: 2,
+          borderColor: colors.primary,
+        },
+        animatedStyle,
+      ]}
+    />
+  );
 }
 
 export default function VoiceListeningOverlay({ visible, onResult, onClose }) {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const transcript = useSharedValue("");
 
   useSpeechRecognitionEvent("result", (event) => {
@@ -109,13 +125,13 @@ export default function VoiceListeningOverlay({ visible, onResult, onClose }) {
       <View style={styles.backdrop}>
         <View style={styles.center}>
           <Pressable style={styles.ringContainer} onPress={onClose}>
-            <PulsingRing delay={0} />
-            <PulsingRing delay={400} />
-            <PulsingRing delay={800} />
+            <PulsingRing delay={0} colors={colors} />
+            <PulsingRing delay={400} colors={colors} />
+            <PulsingRing delay={800} colors={colors} />
             <View style={styles.micCircle}>
               <Microphone
                 size={40}
-                color={Colors.light.surface}
+                color={colors.surface}
                 weight="fill"
               />
             </View>
@@ -127,48 +143,35 @@ export default function VoiceListeningOverlay({ visible, onResult, onClose }) {
   );
 }
 
-const styles = StyleSheet.create({
-  backdrop: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.75)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  closeButton: {
-    position: "absolute",
-    top: 60,
-    right: spacing.xl,
-    padding: spacing.sm,
-  },
-  center: {
-    alignItems: "center",
-    gap: spacing.xxl,
-  },
-  ringContainer: {
-    width: RING_SIZE * 1.8,
-    height: RING_SIZE * 1.8,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  ring: {
-    position: "absolute",
-    width: RING_SIZE,
-    height: RING_SIZE,
-    borderRadius: RING_SIZE / 2,
-    borderWidth: 2,
-    borderColor: Colors.light.primary,
-  },
-  micCircle: {
-    width: RING_SIZE,
-    height: RING_SIZE,
-    borderRadius: RING_SIZE / 2,
-    backgroundColor: Colors.light.primary,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  statusText: {
-    ...typography.body,
-    color: Colors.light.surface,
-    fontSize: 18,
-  },
-});
+const createStyles = (colors) =>
+  StyleSheet.create({
+    backdrop: {
+      flex: 1,
+      backgroundColor: "rgba(0,0,0,0.75)",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    center: {
+      alignItems: "center",
+      gap: spacing.xxl,
+    },
+    ringContainer: {
+      width: RING_SIZE * 1.8,
+      height: RING_SIZE * 1.8,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    micCircle: {
+      width: RING_SIZE,
+      height: RING_SIZE,
+      borderRadius: RING_SIZE / 2,
+      backgroundColor: colors.primary,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    statusText: {
+      ...typography.body,
+      color: colors.surface,
+      fontSize: 18,
+    },
+  });

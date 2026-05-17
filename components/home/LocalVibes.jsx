@@ -1,6 +1,6 @@
 import { View, Text, FlatList, StyleSheet } from "react-native";
-import { Colors } from "../../constants/Color";
 import { spacing, radius, typography } from "../../constants/Tokens";
+import { useTheme } from "../../contexts/ThemeContext";
 
 const PARTNERS = [
   { id: "1", name: "Sip & Savor", category: "Coffee Shop", color: "#c9a96e" },
@@ -9,7 +9,8 @@ const PARTNERS = [
   { id: "4", name: "Bloom & Co", category: "Flower Shop", color: "#a08bc2" },
 ];
 
-function PartnerCard({ name, category, color }) {
+function PartnerCard({ name, category, color, colors }) {
+  const styles = createStyles(colors);
   return (
     <View style={styles.card}>
       <View style={[styles.imagePlaceholder, { backgroundColor: color }]} />
@@ -24,6 +25,9 @@ function PartnerCard({ name, category, color }) {
 }
 
 export default function LocalVibes() {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Local Vibes</Text>
@@ -39,6 +43,7 @@ export default function LocalVibes() {
             name={item.name}
             category={item.category}
             color={item.color}
+            colors={colors}
           />
         )}
       />
@@ -48,39 +53,40 @@ export default function LocalVibes() {
 
 const CARD_WIDTH = 130;
 
-const styles = StyleSheet.create({
-  container: {
-    gap: spacing.sm,
-  },
-  title: {
-    ...typography.body,
-    color: Colors.light.text,
-    fontWeight: "700",
-  },
-  subtitle: {
-    ...typography.caption,
-    color: Colors.light.inactive,
-  },
-  list: {
-    gap: spacing.md,
-    paddingTop: spacing.sm,
-  },
-  card: {
-    width: CARD_WIDTH,
-    gap: spacing.xs,
-  },
-  imagePlaceholder: {
-    width: CARD_WIDTH,
-    height: CARD_WIDTH * 0.75,
-    borderRadius: radius.sm,
-  },
-  name: {
-    ...typography.body,
-    fontSize: 14,
-    color: Colors.light.text,
-  },
-  category: {
-    ...typography.caption,
-    color: Colors.light.inactive,
-  },
-});
+const createStyles = (colors) =>
+  StyleSheet.create({
+    container: {
+      gap: spacing.sm,
+    },
+    title: {
+      ...typography.body,
+      color: colors.text,
+      fontWeight: "700",
+    },
+    subtitle: {
+      ...typography.caption,
+      color: colors.inactive,
+    },
+    list: {
+      gap: spacing.md,
+      paddingTop: spacing.sm,
+    },
+    card: {
+      width: CARD_WIDTH,
+      gap: spacing.xs,
+    },
+    imagePlaceholder: {
+      width: CARD_WIDTH,
+      height: CARD_WIDTH * 0.75,
+      borderRadius: radius.sm,
+    },
+    name: {
+      ...typography.body,
+      fontSize: 14,
+      color: colors.text,
+    },
+    category: {
+      ...typography.caption,
+      color: colors.inactive,
+    },
+  });

@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import { Clock, MapTrifold, Star, Warning } from "phosphor-react-native";
-import { Colors } from "../../constants/Color";
 import { spacing, radius, typography } from "../../constants/Tokens";
+import { useTheme } from "../../contexts/ThemeContext";
 
 const TAG_COLORS = {
   FASTEST: { bg: "#E8F5E9", text: "#2E7D32" },
@@ -24,6 +24,8 @@ function formatDuration(minutes) {
 }
 
 export default function RouteCard({ route, isSelected, isRecommended, onPress }) {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const tagStyle = TAG_COLORS[route.tag] || TAG_COLORS.ALTERNATIVE;
   const congestionColor = CONGESTION_COLORS[route.congestionStatus] || CONGESTION_COLORS.LOW;
   const blocked = route.blocked;
@@ -41,8 +43,8 @@ export default function RouteCard({ route, isSelected, isRecommended, onPress })
         <Text style={[styles.routeName, blocked && styles.textBlocked]} numberOfLines={1}>
           {route.routeName}
         </Text>
-        <View style={[styles.tag, { backgroundColor: blocked ? Colors.light.border : tagStyle.bg }]}>
-          <Text style={[styles.tagText, { color: blocked ? Colors.light.inactive : tagStyle.text }]}>
+        <View style={[styles.tag, { backgroundColor: blocked ? colors.border : tagStyle.bg }]}>
+          <Text style={[styles.tagText, { color: blocked ? colors.inactive : tagStyle.text }]}>
             {route.tag.replace("_", " ")}
           </Text>
         </View>
@@ -50,25 +52,25 @@ export default function RouteCard({ route, isSelected, isRecommended, onPress })
 
       <View style={styles.detailRow}>
         <View style={styles.detail}>
-          <Clock size={16} color={blocked ? Colors.light.inactive : Colors.light.text} />
+          <Clock size={16} color={blocked ? colors.inactive : colors.text} />
           <Text style={[styles.detailText, blocked && styles.textBlocked]}>
             {formatDuration(route.estimatedDuration)}
           </Text>
         </View>
         <View style={styles.detail}>
-          <MapTrifold size={16} color={blocked ? Colors.light.inactive : Colors.light.text} />
+          <MapTrifold size={16} color={blocked ? colors.inactive : colors.text} />
           <Text style={[styles.detailText, blocked && styles.textBlocked]}>
             {route.distanceMiles.toFixed(1)} mi
           </Text>
         </View>
         <View style={styles.detail}>
-          <View style={[styles.congestionDot, { backgroundColor: blocked ? Colors.light.inactive : congestionColor }]} />
+          <View style={[styles.congestionDot, { backgroundColor: blocked ? colors.inactive : congestionColor }]} />
           <Text style={[styles.detailText, blocked && styles.textBlocked]}>
             {route.congestionStatus}
           </Text>
         </View>
         <View style={styles.detail}>
-          <Star size={16} color={blocked ? Colors.light.inactive : Colors.light.accent} weight="fill" />
+          <Star size={16} color={blocked ? colors.inactive : colors.accent} weight="fill" />
           <Text style={[styles.detailText, blocked && styles.textBlocked]}>
             {route.pointsEarned}
           </Text>
@@ -77,7 +79,7 @@ export default function RouteCard({ route, isSelected, isRecommended, onPress })
 
       {blocked && route.blockReason && (
         <View style={styles.blockRow}>
-          <Warning size={14} color={Colors.light.inactive} />
+          <Warning size={14} color={colors.inactive} />
           <Text style={styles.blockText}>{route.blockReason}</Text>
         </View>
       )}
@@ -85,72 +87,73 @@ export default function RouteCard({ route, isSelected, isRecommended, onPress })
   );
 }
 
-const styles = StyleSheet.create({
-  card: {
-    borderWidth: 1.5,
-    borderColor: Colors.light.border,
-    borderRadius: radius.sm,
-    padding: spacing.lg,
-    gap: spacing.sm,
-  },
-  cardSelected: {
-    borderColor: Colors.light.primary,
-    backgroundColor: "#FDF3EF",
-  },
-  cardBlocked: {
-    opacity: 0.5,
-  },
-  topRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: spacing.sm,
-  },
-  routeName: {
-    ...typography.body,
-    color: Colors.light.text,
-    flex: 1,
-  },
-  tag: {
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
-    borderRadius: radius.full,
-  },
-  tagText: {
-    fontSize: 11,
-    fontWeight: "700",
-    textTransform: "uppercase",
-  },
-  detailRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: spacing.lg,
-    flexWrap: "wrap",
-  },
-  detail: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: spacing.xs,
-  },
-  detailText: {
-    ...typography.caption,
-    color: Colors.light.text,
-  },
-  congestionDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-  },
-  textBlocked: {
-    color: Colors.light.inactive,
-  },
-  blockRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: spacing.xs,
-  },
-  blockText: {
-    ...typography.caption,
-    color: Colors.light.inactive,
-  },
-});
+const createStyles = (colors) =>
+  StyleSheet.create({
+    card: {
+      borderWidth: 1.5,
+      borderColor: colors.border,
+      borderRadius: radius.sm,
+      padding: spacing.lg,
+      gap: spacing.sm,
+    },
+    cardSelected: {
+      borderColor: colors.primary,
+      backgroundColor: colors.surfaceAlt,
+    },
+    cardBlocked: {
+      opacity: 0.5,
+    },
+    topRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: spacing.sm,
+    },
+    routeName: {
+      ...typography.body,
+      color: colors.text,
+      flex: 1,
+    },
+    tag: {
+      paddingHorizontal: spacing.sm,
+      paddingVertical: spacing.xs,
+      borderRadius: radius.full,
+    },
+    tagText: {
+      fontSize: 11,
+      fontWeight: "700",
+      textTransform: "uppercase",
+    },
+    detailRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: spacing.lg,
+      flexWrap: "wrap",
+    },
+    detail: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: spacing.xs,
+    },
+    detailText: {
+      ...typography.caption,
+      color: colors.text,
+    },
+    congestionDot: {
+      width: 8,
+      height: 8,
+      borderRadius: 4,
+    },
+    textBlocked: {
+      color: colors.inactive,
+    },
+    blockRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: spacing.xs,
+    },
+    blockText: {
+      ...typography.caption,
+      color: colors.inactive,
+    },
+  });

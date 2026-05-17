@@ -11,7 +11,6 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { ArrowLeft } from "phosphor-react-native";
-import { Colors } from "../constants/Color";
 import { spacing, radius, iconSize, typography, fonts } from "../constants/Tokens";
 import {
   upsertDestination,
@@ -21,6 +20,7 @@ import {
 } from "../services/destinationService";
 import useMapboxSearch from "../hooks/useMapboxSearch";
 import SuggestionList from "../components/search/SuggestionList";
+import { useTheme } from "../contexts/ThemeContext";
 
 const TITLES = {
   home: "Set Home Location",
@@ -32,6 +32,8 @@ export default function SaveDestinationScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { type, id, currentLabel, currentAddress } = useLocalSearchParams();
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
 
   const [label, setLabel] = useState(currentLabel ?? "");
   const [address, setAddress] = useState(currentAddress ?? "");
@@ -102,7 +104,7 @@ export default function SaveDestinationScreen() {
         <Pressable onPress={() => router.back()} hitSlop={8}>
           <ArrowLeft
             size={iconSize.md}
-            color={Colors.light.text}
+            color={colors.text}
             weight="bold"
           />
         </Pressable>
@@ -114,7 +116,7 @@ export default function SaveDestinationScreen() {
           <TextInput
             style={styles.input}
             placeholder="Location name"
-            placeholderTextColor={Colors.light.inactive}
+            placeholderTextColor={colors.inactive}
             value={label}
             onChangeText={setLabel}
             autoFocus
@@ -124,7 +126,7 @@ export default function SaveDestinationScreen() {
         <TextInput
           style={styles.input}
           placeholder="Address"
-          placeholderTextColor={Colors.light.inactive}
+          placeholderTextColor={colors.inactive}
           value={address}
           onChangeText={(text) => {
             setAddress(text);
@@ -158,7 +160,7 @@ export default function SaveDestinationScreen() {
           disabled={!canSave || saving}
         >
           {saving ? (
-            <ActivityIndicator color={Colors.light.background} />
+            <ActivityIndicator color={colors.background} />
           ) : (
             <Text style={styles.saveBtnText}>Save</Text>
           )}
@@ -171,7 +173,7 @@ export default function SaveDestinationScreen() {
             disabled={deleting}
           >
             {deleting ? (
-              <ActivityIndicator color={Colors.light.primary} />
+              <ActivityIndicator color={colors.primary} />
             ) : (
               <Text style={styles.deleteBtnText}>Delete</Text>
             )}
@@ -182,63 +184,64 @@ export default function SaveDestinationScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.light.background,
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: spacing.xl,
-    paddingVertical: spacing.md,
-    gap: spacing.md,
-  },
-  title: {
-    ...typography.body,
-    fontFamily: fonts.semiBold,
-    color: Colors.light.text,
-  },
-  form: {
-    paddingHorizontal: spacing.xl,
-    paddingTop: spacing.lg,
-    gap: spacing.md,
-  },
-  input: {
-    ...typography.body,
-    color: Colors.light.text,
-    backgroundColor: Colors.light.surface,
-    borderWidth: 1,
-    borderColor: Colors.light.border,
-    borderRadius: radius.sm,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
-  },
-  saveBtn: {
-    backgroundColor: Colors.light.primary,
-    borderRadius: radius.sm,
-    paddingVertical: spacing.md,
-    alignItems: "center",
-    marginTop: spacing.sm,
-  },
-  saveBtnDisabled: {
-    opacity: 0.5,
-  },
-  saveBtnText: {
-    ...typography.body,
-    fontFamily: fonts.semiBold,
-    color: Colors.light.background,
-  },
-  deleteBtn: {
-    borderRadius: radius.sm,
-    borderWidth: 1,
-    borderColor: Colors.light.primary,
-    paddingVertical: spacing.md,
-    alignItems: "center",
-  },
-  deleteBtnText: {
-    ...typography.body,
-    fontFamily: fonts.semiBold,
-    color: Colors.light.primary,
-  },
-});
+const createStyles = (colors) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    header: {
+      flexDirection: "row",
+      alignItems: "center",
+      paddingHorizontal: spacing.xl,
+      paddingVertical: spacing.md,
+      gap: spacing.md,
+    },
+    title: {
+      ...typography.body,
+      fontFamily: fonts.semiBold,
+      color: colors.text,
+    },
+    form: {
+      paddingHorizontal: spacing.xl,
+      paddingTop: spacing.lg,
+      gap: spacing.md,
+    },
+    input: {
+      ...typography.body,
+      color: colors.text,
+      backgroundColor: colors.surface,
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: radius.sm,
+      paddingHorizontal: spacing.lg,
+      paddingVertical: spacing.md,
+    },
+    saveBtn: {
+      backgroundColor: colors.primary,
+      borderRadius: radius.sm,
+      paddingVertical: spacing.md,
+      alignItems: "center",
+      marginTop: spacing.sm,
+    },
+    saveBtnDisabled: {
+      opacity: 0.5,
+    },
+    saveBtnText: {
+      ...typography.body,
+      fontFamily: fonts.semiBold,
+      color: colors.background,
+    },
+    deleteBtn: {
+      borderRadius: radius.sm,
+      borderWidth: 1,
+      borderColor: colors.primary,
+      paddingVertical: spacing.md,
+      alignItems: "center",
+    },
+    deleteBtnText: {
+      ...typography.body,
+      fontFamily: fonts.semiBold,
+      color: colors.primary,
+    },
+  });

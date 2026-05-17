@@ -1,11 +1,13 @@
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { ArrowLeft, Lightning } from "phosphor-react-native";
-import { Colors } from "../../constants/Color";
 import { spacing, radius, typography } from "../../constants/Tokens";
 import RouteCard from "./RouteCard";
+import { useTheme } from "../../contexts/ThemeContext";
 
 export default function RouteBottomSheet({ routeData, selectedRouteId, onSelectRoute, onClose }) {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const { routeOptions, nudgeMessage, recommendedRouteId } = routeData;
 
   const sorted = [...routeOptions].sort((a, b) => {
@@ -20,14 +22,14 @@ export default function RouteBottomSheet({ routeData, selectedRouteId, onSelectR
     <BottomSheetScrollView contentContainerStyle={styles.container}>
       <View style={styles.header}>
         <Pressable onPress={onClose} hitSlop={12}>
-          <ArrowLeft size={24} color={Colors.light.text} />
+          <ArrowLeft size={24} color={colors.text} />
         </Pressable>
         <Text style={styles.title}>Routes</Text>
       </View>
 
       {nudgeMessage && (
         <View style={styles.nudge}>
-          <Lightning size={18} color={Colors.light.accent} weight="fill" />
+          <Lightning size={18} color={colors.accent} weight="fill" />
           <Text style={styles.nudgeText}>{nudgeMessage}</Text>
         </View>
       )}
@@ -51,47 +53,48 @@ export default function RouteBottomSheet({ routeData, selectedRouteId, onSelectR
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: spacing.xl,
-    paddingBottom: spacing.xxxl,
-    gap: spacing.lg,
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: spacing.md,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "700",
-    color: Colors.light.text,
-  },
-  nudge: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: spacing.sm,
-    backgroundColor: Colors.light.surfaceAlt,
-    padding: spacing.md,
-    borderRadius: radius.sm,
-  },
-  nudgeText: {
-    ...typography.caption,
-    color: Colors.light.text,
-    flex: 1,
-  },
-  cards: {
-    gap: spacing.md,
-  },
-  startButton: {
-    backgroundColor: Colors.light.primary,
-    paddingVertical: spacing.lg,
-    borderRadius: radius.md,
-    alignItems: "center",
-  },
-  startText: {
-    color: "#ffffff",
-    fontSize: 16,
-    fontWeight: "700",
-  },
-});
+const createStyles = (colors) =>
+  StyleSheet.create({
+    container: {
+      paddingHorizontal: spacing.xl,
+      paddingBottom: spacing.xxxl,
+      gap: spacing.lg,
+    },
+    header: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: spacing.md,
+    },
+    title: {
+      fontSize: 20,
+      fontWeight: "700",
+      color: colors.text,
+    },
+    nudge: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: spacing.sm,
+      backgroundColor: colors.surfaceAlt,
+      padding: spacing.md,
+      borderRadius: radius.sm,
+    },
+    nudgeText: {
+      ...typography.caption,
+      color: colors.text,
+      flex: 1,
+    },
+    cards: {
+      gap: spacing.md,
+    },
+    startButton: {
+      backgroundColor: colors.primary,
+      paddingVertical: spacing.lg,
+      borderRadius: radius.md,
+      alignItems: "center",
+    },
+    startText: {
+      color: "#ffffff",
+      fontSize: 16,
+      fontWeight: "700",
+    },
+  });

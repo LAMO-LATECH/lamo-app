@@ -11,16 +11,14 @@ import MapControls from "../../components/home/MapControls";
 import StreakBadge from "../../components/home/StreakBadge";
 import BottomSheetContent from "../../components/home/BottomSheetContent";
 import RouteBottomSheet from "../../components/home/RouteBottomSheet";
-import { Colors } from "../../constants/Color";
 import { shadow } from "../../constants/Tokens";
+import { useTheme } from "../../contexts/ThemeContext";
 
 MapboxGL.setAccessToken(process.env.EXPO_PUBLIC_MAPBOX_TOKEN);
 
-const MAP_STYLES = [
-  "mapbox://styles/mapbox/light-v11",
-  "mapbox://styles/mapbox/dark-v11",
-  "mapbox://styles/mapbox/satellite-streets-v11",
-];
+const MAP_STYLE_LIGHT = "mapbox://styles/mapbox/light-v11";
+const MAP_STYLE_DARK = "mapbox://styles/mapbox/dark-v11";
+const MAP_STYLE_SATELLITE = "mapbox://styles/mapbox/satellite-streets-v11";
 
 export default function Home() {
   const bottomSheetRef = useRef(null);
@@ -29,12 +27,28 @@ export default function Home() {
   const navigation = useNavigation();
   const { destination: selectedDestination, clearDestination } = useDestination();
   const { user } = useAuth();
-  const [styleURL, setStyleURL] = useState(MAP_STYLES[0]);
+  const { colors, isDark } = useTheme();
+  const styles = createStyles(colors);
+
+  const mapStyles = useMemo(
+    () => [isDark ? MAP_STYLE_DARK : MAP_STYLE_LIGHT, MAP_STYLE_SATELLITE],
+    [isDark]
+  );
+
+  const [styleURL, setStyleURL] = useState(isDark ? MAP_STYLE_DARK : MAP_STYLE_LIGHT);
   const [followUser, setFollowUser] = useState(true);
   const [destination, setDestination] = useState(null);
   const [routeData, setRouteData] = useState(null);
   const [selectedRouteId, setSelectedRouteId] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
+
+  // Auto-switch map style when theme changes (unless on satellite)
+  useEffect(() => {
+    setStyleURL((current) => {
+      if (current === MAP_STYLE_SATELLITE) return current;
+      return isDark ? MAP_STYLE_DARK : MAP_STYLE_LIGHT;
+    });
+  }, [isDark]);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("tabPress", () => {
@@ -103,10 +117,10 @@ export default function Home() {
 
   const handleCycleStyle = useCallback(() => {
     setStyleURL((current) => {
-      const index = MAP_STYLES.indexOf(current);
-      return MAP_STYLES[(index + 1) % MAP_STYLES.length];
+      const index = mapStyles.indexOf(current);
+      return mapStyles[(index + 1) % mapStyles.length];
     });
-  }, []);
+  }, [mapStyles]);
 
   const handleClearRoutes = useCallback(() => {
     setRouteData(null);
@@ -158,7 +172,7 @@ export default function Home() {
           puckBearing="heading"
           pulsing={{
             isEnabled: true,
-            color: Colors.light.primary,
+            color: colors.primary,
           }}
         />
         {destination && !routeData && (
@@ -179,7 +193,7 @@ export default function Home() {
               <MapboxGL.LineLayer
                 id={`line-${geo.routeId}-${isSelected}`}
                 style={{
-                  lineColor: isSelected ? Colors.light.primary : Colors.light.inactive,
+                  lineColor: isSelected ? colors.primary : colors.inactive,
                   lineWidth: isSelected ? 6 : 3,
                   lineOpacity: isSelected ? 1 : 0.5,
                   lineCap: "round",
@@ -217,16 +231,17 @@ export default function Home() {
   );
 }
 
-const styles = StyleSheet.create({
-  fill: {
-    flex: 1,
-  },
-  sheetBackground: {
-    backgroundColor: Colors.light.surface,
-    ...shadow.sm,
-  },
-  handleIndicator: {
-    backgroundColor: Colors.light.border,
-    width: 40,
-  },
-});
+const createStyles = (colors) =>
+  StyleSheet.create({
+    fill: {
+      flex: 1,
+    },
+    sheetBackground: {
+      backgroundColor: colors.surface,
+      ...shadow.sm,
+    },
+    handleIndicator: {
+      backgroundColor: colors.border,
+      width: 40,
+    },
+  });

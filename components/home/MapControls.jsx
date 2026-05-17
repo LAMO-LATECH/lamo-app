@@ -1,8 +1,8 @@
 import { View, Pressable, StyleSheet } from "react-native";
 import { GearSix, Crosshair, Stack } from "phosphor-react-native";
 import { useRouter } from "expo-router";
-import { Colors } from "../../constants/Color";
 import { spacing, radius, iconSize, shadow } from "../../constants/Tokens";
+import { useTheme } from "../../contexts/ThemeContext";
 
 const BUTTONS = [
   { key: "settings", Icon: GearSix },
@@ -12,6 +12,8 @@ const BUTTONS = [
 
 export default function MapControls({ onRecenter, onCycleStyle }) {
   const router = useRouter();
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
 
   const handlePress = (key) => {
     if (key === "settings") {
@@ -27,27 +29,28 @@ export default function MapControls({ onRecenter, onCycleStyle }) {
     <View style={styles.container}>
       {BUTTONS.map(({ key, Icon }) => (
         <Pressable key={key} style={styles.button} onPress={() => handlePress(key)}>
-          <Icon size={iconSize.sm} color={Colors.light.text} weight="bold" />
+          <Icon size={iconSize.sm} color={colors.text} weight="bold" />
         </Pressable>
       ))}
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    position: "absolute",
-    top: 60,
-    left: spacing.lg,
-    gap: spacing.sm,
-  },
-  button: {
-    width: 44,
-    height: 44,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: Colors.light.surface,
-    borderRadius: radius.sm,
-    ...shadow.sm,
-  },
-});
+const createStyles = (colors) =>
+  StyleSheet.create({
+    container: {
+      position: "absolute",
+      top: 60,
+      left: spacing.lg,
+      gap: spacing.sm,
+    },
+    button: {
+      width: 44,
+      height: 44,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: colors.surface,
+      borderRadius: radius.sm,
+      ...shadow.sm,
+    },
+  });

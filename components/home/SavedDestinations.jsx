@@ -3,12 +3,14 @@ import { View, Text, Pressable, ScrollView, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 import { useFocusEffect } from "expo-router";
 import { House, Briefcase, Plus, MapPin } from "phosphor-react-native";
-import { Colors } from "../../constants/Color";
 import { spacing, radius, iconSize, typography } from "../../constants/Tokens";
 import { getDestinations } from "../../services/destinationService";
+import { useTheme } from "../../contexts/ThemeContext";
 
 export default function SavedDestinations() {
   const router = useRouter();
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const [destinations, setDestinations] = useState([]);
 
   useFocusEffect(
@@ -36,8 +38,8 @@ export default function SavedDestinations() {
       label: "Home",
       subtitle: home?.address,
       Icon: House,
-      bg: Colors.light.surfaceDark,
-      iconColor: Colors.light.accent,
+      bg: colors.surfaceDark,
+      iconColor: colors.accent,
       weight: "fill",
       onPress: () =>
         router.push({
@@ -50,8 +52,8 @@ export default function SavedDestinations() {
       label: "Work",
       subtitle: work?.address,
       Icon: Briefcase,
-      bg: Colors.light.surfaceDark,
-      iconColor: Colors.light.accent,
+      bg: colors.surfaceDark,
+      iconColor: colors.accent,
       weight: "fill",
       onPress: () =>
         router.push({
@@ -64,8 +66,8 @@ export default function SavedDestinations() {
       label: d.label,
       subtitle: d.address,
       Icon: MapPin,
-      bg: Colors.light.surfaceDark,
-      iconColor: Colors.light.accent,
+      bg: colors.surfaceDark,
+      iconColor: colors.accent,
       weight: "fill",
       onPress: () =>
         router.push({
@@ -82,8 +84,8 @@ export default function SavedDestinations() {
       key: "new",
       label: "New",
       Icon: Plus,
-      bg: Colors.light.surfaceAlt,
-      iconColor: Colors.light.primary,
+      bg: colors.surfaceAlt,
+      iconColor: colors.primary,
       weight: "bold",
       onPress: () =>
         router.push({
@@ -113,24 +115,25 @@ export default function SavedDestinations() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    gap: spacing.xl,
-  },
-  item: {
-    alignItems: "center",
-    gap: spacing.xs,
-  },
-  circle: {
-    width: 48,
-    height: 48,
-    borderRadius: radius.sm,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  label: {
-    ...typography.caption,
-    color: Colors.light.text,
-  },
-});
+const createStyles = (colors) =>
+  StyleSheet.create({
+    container: {
+      flexDirection: "row",
+      gap: spacing.xl,
+    },
+    item: {
+      alignItems: "center",
+      gap: spacing.xs,
+    },
+    circle: {
+      width: 48,
+      height: 48,
+      borderRadius: radius.sm,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    label: {
+      ...typography.caption,
+      color: colors.text,
+    },
+  });

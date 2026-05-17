@@ -9,7 +9,6 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useEffect } from "react";
-import { Colors } from "../constants/Color";
 import {
   spacing,
   radius,
@@ -17,10 +16,7 @@ import {
   typography,
   shadow,
 } from "../constants/Tokens";
-
-const ACTIVE_COLOR = Colors.light.primary;
-const INACTIVE_COLOR = Colors.light.inactive;
-const BG_COLOR = Colors.light.surfaceAlt;
+import { useTheme } from "../contexts/ThemeContext";
 
 const TAB_CONFIG = {
   index: { label: "Map", Icon: MapPin },
@@ -28,13 +24,16 @@ const TAB_CONFIG = {
   profile: { label: "Profile", Icon: UserCircle },
 };
 
-function TabItem({ route, isFocused, onPress, onLongPress }) {
+function TabItem({ route, isFocused, onPress, onLongPress, colors }) {
   const config = TAB_CONFIG[route.name];
   if (!config) return null;
 
   const { label, Icon } = config;
   const scale = useSharedValue(1);
   const colorProgress = useSharedValue(isFocused ? 1 : 0);
+
+  const activeColor = colors.primary;
+  const inactiveColor = colors.inactive;
 
   useEffect(() => {
     colorProgress.value = withTiming(isFocused ? 1 : 0, { duration: 250 });
@@ -48,7 +47,7 @@ function TabItem({ route, isFocused, onPress, onLongPress }) {
     color: interpolateColor(
       colorProgress.value,
       [0, 1],
-      [INACTIVE_COLOR, ACTIVE_COLOR],
+      [inactiveColor, activeColor],
     ),
   }));
 
@@ -69,7 +68,7 @@ function TabItem({ route, isFocused, onPress, onLongPress }) {
         <Icon
           size={iconSize.md}
           weight={isFocused ? "fill" : "duotone"}
-          color={isFocused ? ACTIVE_COLOR : INACTIVE_COLOR}
+          color={isFocused ? activeColor : inactiveColor}
         />
       </Animated.View>
       <Animated.Text style={[styles.label, animatedTextStyle]}>
@@ -81,10 +80,14 @@ function TabItem({ route, isFocused, onPress, onLongPress }) {
 
 export default function TabBar({ state, descriptors, navigation }) {
   const insets = useSafeAreaInsets();
+  const { colors } = useTheme();
 
   return (
     <View
-      style={[styles.container, { paddingBottom: insets.bottom || spacing.md }]}
+      style={[
+        styles.container,
+        { paddingBottom: insets.bottom || spacing.md, backgroundColor: colors.surfaceAlt },
+      ]}
     >
       {state.routes.map((route, index) => {
         const isFocused = state.index === index;
@@ -111,6 +114,7 @@ export default function TabBar({ state, descriptors, navigation }) {
             isFocused={isFocused}
             onPress={onPress}
             onLongPress={onLongPress}
+            colors={colors}
           />
         );
       })}
@@ -121,7 +125,6 @@ export default function TabBar({ state, descriptors, navigation }) {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    backgroundColor: BG_COLOR,
     paddingTop: spacing.md,
     ...shadow.sm,
   },
