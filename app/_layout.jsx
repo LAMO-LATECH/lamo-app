@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
-import { Stack, Redirect } from "expo-router";
+import { Stack } from "expo-router";
 import { View } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import * as SplashScreen from "expo-splash-screen";
@@ -72,11 +72,6 @@ function RootNavigator() {
           }}
         />
       </Stack>
-      {isAuthenticated ? (
-        <Redirect href="/(tabs)" />
-      ) : (
-        <Redirect href="/(auth)" />
-      )}
     </View>
   );
 }
