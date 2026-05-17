@@ -12,7 +12,7 @@ import {
 import { useAuth } from "../../contexts/AuthContext";
 import { Colors } from "../../constants/Color";
 import { fonts } from "../../constants/Tokens";
-import { getMe, updateMe, deleteAccount } from "../../services/userService";
+import { getMe, updateMe } from "../../services/userService";
 import { useState, useEffect } from "react";
 import { router } from "expo-router";
 import {
@@ -30,9 +30,6 @@ const Profile = () => {
   const [editVisible, setEditVisible] = useState(false);
   const [newUsername, setNewUsername] = useState("");
   const [saving, setSaving] = useState(false);
-  const [deleteVisible, setDeleteVisible] = useState(false);
-  const [confirmText, setConfirmText] = useState("");
-  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     const loadUser = async () => {
@@ -67,19 +64,6 @@ const Profile = () => {
       Alert.alert("Error", "Failed to update profile.");
     } finally {
       setSaving(false);
-    }
-  };
-
-  const handleDeleteAccount = async () => {
-    if (confirmText.toLowerCase() !== "confirm") return;
-    setDeleting(true);
-    try {
-      await deleteAccount();
-      logout();
-    } catch (error) {
-      Alert.alert("Error", "Failed to delete account.");
-    } finally {
-      setDeleting(false);
     }
   };
 
@@ -132,7 +116,6 @@ const Profile = () => {
               <PencilSimple size={20} weight="bold" color="#FFFFFF" />
               <Text style={styles.actionText}>Edit Profile</Text>
             </View>
-            <CaretRight size={18} weight="bold" color="rgba(255,255,255,0.5)" />
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -160,54 +143,6 @@ const Profile = () => {
           <TouchableOpacity style={styles.logoutButton} onPress={logout}>
             <Text style={styles.logoutText}>Log Out</Text>
           </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.deleteButton}
-            onPress={() => setDeleteVisible(true)}
-          >
-            <Text style={styles.deleteText}>Delete Account</Text>
-          </TouchableOpacity>
-
-          <Modal visible={deleteVisible} transparent>
-            <View style={styles.modalOverlay}>
-              <View style={styles.modalCard}>
-                <Text style={styles.modalTitle}>Delete Account</Text>
-                <Text style={styles.deleteWarning}>
-                  This action is permanent and cannot be undone. Type "confirm"
-                  below to delete your account.
-                </Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder='Type "confirm"'
-                  placeholderTextColor={Colors.light.inactive}
-                  value={confirmText}
-                  onChangeText={setConfirmText}
-                  autoCapitalize="none"
-                />
-                <TouchableOpacity
-                  style={[
-                    styles.deleteConfirmButton,
-                    confirmText.toLowerCase() !== "confirm" &&
-                      styles.disabledButton,
-                  ]}
-                  onPress={handleDeleteAccount}
-                  disabled={confirmText.toLowerCase() !== "confirm" || deleting}
-                >
-                  <Text style={styles.deleteConfirmText}>
-                    {deleting ? "Deleting..." : "Delete My Account"}
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => {
-                    setDeleteVisible(false);
-                    setConfirmText("");
-                  }}
-                >
-                  <Text style={styles.cancelText}>Cancel</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </Modal>
 
           <Modal visible={editVisible} animationType="slide" transparent>
             <View style={styles.modalOverlay}>
@@ -369,42 +304,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.light.primary,
   },
   logoutText: {
-    fontSize: 16,
-    fontFamily: fonts.semiBold,
-    color: "#FFFFFF",
-  },
-  deleteButton: {
-    width: "100%",
-    paddingVertical: 16,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: "#F1C3B5",
-    alignItems: "center",
-    marginTop: 12,
-    backgroundColor: "#FDE8E8",
-  },
-  deleteText: {
-    fontSize: 16,
-    fontFamily: fonts.semiBold,
-    color: "#D9534F",
-  },
-  deleteWarning: {
-    fontSize: 14,
-    fontFamily: fonts.regular,
-    color: Colors.light.text,
-    opacity: 0.7,
-    textAlign: "center",
-    marginBottom: 18,
-  },
-  deleteConfirmButton: {
-    width: "100%",
-    backgroundColor: "#D9534F",
-    paddingVertical: 16,
-    borderRadius: 20,
-    alignItems: "center",
-    marginBottom: 14,
-  },
-  deleteConfirmText: {
     fontSize: 16,
     fontFamily: fonts.semiBold,
     color: "#FFFFFF",

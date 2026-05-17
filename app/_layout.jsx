@@ -46,10 +46,10 @@ function RootNavigator() {
         <Stack.Screen name="/rideHistory" />
         <Stack.Screen name="(tabs)" redirect={!isAuthenticated} />
         <Stack.Screen name="(auth)" redirect={isAuthenticated} />
-        <Stack.Screen name="username"/>
+        <Stack.Screen name="username" />
         <Stack.Screen
           name="settings"
-          options={{ headerShown: true, title: "Settings" }}
+          options={{ headerShown: false, title: "Settings" }}
         />
         <Stack.Screen
           name="search"
