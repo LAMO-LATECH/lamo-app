@@ -23,6 +23,17 @@ export function updatePreferences(updates) {
   });
 }
 
+export function getGamification() {
+  return apiRequest(ENDPOINTS.gamification, { method: "GET" });
+}
+
+export function updateGamification(updates) {
+  return apiRequest(ENDPOINTS.gamification, {
+    method: "PATCH",
+    body: updates,
+  });
+}
+
 export function deleteAccount() {
   return apiRequest(ENDPOINTS.me, {
     method: "DELETE",

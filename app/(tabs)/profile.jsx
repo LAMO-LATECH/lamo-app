@@ -88,22 +88,27 @@ const Profile = () => {
 
           <View style={styles.badge}>
             <Trophy size={14} weight="fill" color={colors.accent} />
-            <Text style={styles.badgeText}>Silver Driver</Text>
+            <Text style={styles.badgeText}>
+              {user?.badge
+                ? user.badge.charAt(0).toUpperCase() + user.badge.slice(1)
+                : "Bronze"}{" "}
+              Driver
+            </Text>
           </View>
 
           <View style={styles.statsContainer}>
             <View style={styles.statCard}>
-              <Text style={styles.statNumber}>0</Text>
+              <Text style={styles.statNumber}>{user?.points ?? 0}</Text>
               <Text style={styles.statLabel}>Total Points</Text>
             </View>
 
             <View style={styles.statCard}>
-              <Text style={styles.statNumber}>0</Text>
+              <Text style={styles.statNumber}>{user?.streak ?? 0}</Text>
               <Text style={styles.statLabel}>Best Streak</Text>
             </View>
 
             <View style={styles.statCardWide}>
-              <Text style={styles.statNumber}>0</Text>
+              <Text style={styles.statNumber}>{user?.routesAccepted ?? 0}</Text>
               <Text style={styles.statLabel}>Smart Routes</Text>
             </View>
           </View>

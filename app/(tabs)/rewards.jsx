@@ -1,7 +1,9 @@
-import { StyleSheet, Text, View, ScrollView } from "react-native";
+import { StyleSheet, Text, View, ScrollView, ActivityIndicator } from "react-native";
 import { fonts, spacing, radius, typography } from "../../constants/Tokens";
 import { Trophy, Coffee, Car, Leaf } from "phosphor-react-native";
 import { useTheme } from "../../contexts/ThemeContext";
+import { useState, useEffect } from "react";
+import { getMe } from "../../services/userService";
 
 const REWARDS = [
   {
@@ -32,15 +34,49 @@ const REWARDS = [
     iconBg: "#DDE9D6",
   },
 ];
-const USER_POINTS = 1240;
-const CURRENT_TIER = "Silver";
-const NEXT_TIER = "Gold";
-const TIER_PROGRESS = 0.62;
-const POINTS_TO_NEXT = 760;
+function deriveTier(points) {
+  if (points < 1000) {
+    return {
+      current: "Bronze",
+      next: "Silver",
+      progress: points / 1000,
+      pointsToNext: 1000 - points,
+    };
+  }
+  if (points < 2000) {
+    return {
+      current: "Silver",
+      next: "Gold",
+      progress: (points - 1000) / 1000,
+      pointsToNext: 2000 - points,
+    };
+  }
+  return { current: "Gold", next: null, progress: 1.0, pointsToNext: 0 };
+}
 
 const Rewards = () => {
   const { colors } = useTheme();
   const styles = createStyles(colors);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getMe()
+      .then((data) => setUser(data.user || data))
+      .catch((err) => console.error("Failed to load user data:", err))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const points = user?.points ?? 0;
+  const tier = deriveTier(points);
+
+  if (loading) {
+    return (
+      <View style={[styles.container, { justifyContent: "center", alignItems: "center" }]}>
+        <ActivityIndicator color={colors.primary} />
+      </View>
+    );
+  }
 
   return (
     <ScrollView
@@ -48,27 +84,29 @@ const Rewards = () => {
       contentContainerStyle={styles.contentContainer}
     >
       <Text style={styles.title}>Rewards</Text>
-      <Text style={styles.pointsNumber}>{USER_POINTS.toLocaleString()}</Text>
+      <Text style={styles.pointsNumber}>{points.toLocaleString()}</Text>
       <Text style={styles.pointsLabel}>points available</Text>
 
       <View style={styles.tierCard}>
         <View style={styles.tierTopRow}>
           <View style={styles.tierBadge}>
             <Trophy size={14} weight="fill" color="#FFFFFF" />
-            <Text style={styles.tierBadgeText}>{CURRENT_TIER} Driver</Text>
+            <Text style={styles.tierBadgeText}>{tier.current} Driver</Text>
           </View>
-          <Text style={styles.tierProgressText}>
-            {POINTS_TO_NEXT} pts to {NEXT_TIER}
-          </Text>
+          {tier.next && (
+            <Text style={styles.tierProgressText}>
+              {tier.pointsToNext} pts to {tier.next}
+            </Text>
+          )}
         </View>
         <View style={styles.progressTrack}>
           <View
-            style={[styles.progressFill, { width: `${TIER_PROGRESS * 100}%` }]}
+            style={[styles.progressFill, { width: `${tier.progress * 100}%` }]}
           />
         </View>
         <View style={styles.tierLabelsRow}>
-          <Text style={styles.tierLabel}>{CURRENT_TIER}</Text>
-          <Text style={styles.tierLabel}>{NEXT_TIER}</Text>
+          <Text style={styles.tierLabel}>{tier.current}</Text>
+          <Text style={styles.tierLabel}>{tier.next ?? "Max"}</Text>
         </View>
       </View>
 

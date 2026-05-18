@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigation } from "expo-router";
 import { useDestination } from "../../contexts/DestinationContext";
 import { useAuth } from "../../contexts/AuthContext";
+import { getMe } from "../../services/userService";
 import { optimizeRoute } from "../../services/optimizeService";
 import MapControls from "../../components/home/MapControls";
 import StreakBadge from "../../components/home/StreakBadge";
@@ -41,6 +42,13 @@ export default function Home() {
   const [routeData, setRouteData] = useState(null);
   const [selectedRouteId, setSelectedRouteId] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
+  const [streak, setStreak] = useState(0);
+
+  useEffect(() => {
+    getMe()
+      .then((data) => setStreak((data.user || data)?.streak ?? 0))
+      .catch((err) => console.error("Failed to load streak:", err));
+  }, []);
 
   // Auto-switch map style when theme changes (unless on satellite)
   useEffect(() => {
@@ -206,7 +214,7 @@ export default function Home() {
       </MapboxGL.MapView>
 
       <MapControls onRecenter={handleRecenter} onCycleStyle={handleCycleStyle} />
-      <StreakBadge />
+      <StreakBadge count={streak} />
 
       <BottomSheet
         ref={bottomSheetRef}

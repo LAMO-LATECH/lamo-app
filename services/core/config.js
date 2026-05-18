@@ -13,6 +13,9 @@ export const ENDPOINTS = {
   me: "/api/v1/users/me",
   preferences: "/api/v1/users/me/preferences",
 
+  // gamification
+  gamification: "/api/v1/users/me/gamification",
+
   // destinations
   destinations: "/api/v1/users/me/destinations",
 };
