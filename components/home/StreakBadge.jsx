@@ -11,7 +11,7 @@ export default function StreakBadge({ count = 5 }) {
     <View style={styles.container}>
       <View style={styles.row}>
         <Fire size={iconSize.sm} weight="fill" color={"#FF746C"} />
-        <Text style={styles.text}>{count} day</Text>
+        <Text style={styles.text}>{count} {count === 1 ? "day" : "days"}</Text>
       </View>
     </View>
   );
