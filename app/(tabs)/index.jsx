@@ -28,17 +28,20 @@ export default function Home() {
   const cameraRef = useRef(null);
   const snapPoints = useMemo(() => ["45%", "80%"], []);
   const navigation = useNavigation();
-  const { destination: selectedDestination, clearDestination } = useDestination();
+  const { destination: selectedDestination, clearDestination } =
+    useDestination();
   const { user } = useAuth();
   const { colors, isDark } = useTheme();
   const styles = createStyles(colors);
 
   const mapStyles = useMemo(
     () => [isDark ? MAP_STYLE_DARK : MAP_STYLE_LIGHT, MAP_STYLE_SATELLITE],
-    [isDark]
+    [isDark],
   );
 
-  const [styleURL, setStyleURL] = useState(isDark ? MAP_STYLE_DARK : MAP_STYLE_LIGHT);
+  const [styleURL, setStyleURL] = useState(
+    isDark ? MAP_STYLE_DARK : MAP_STYLE_LIGHT,
+  );
   const [followUser, setFollowUser] = useState(true);
   const [destination, setDestination] = useState(null);
   const [routeData, setRouteData] = useState(null);
@@ -71,15 +74,9 @@ export default function Home() {
 
   useEffect(() => {
     if (selectedDestination) {
-      setDestination(selectedDestination);
-      setFollowUser(false);
       setShowRoutes(false);
-      cameraRef.current?.setCamera({
-        centerCoordinate: [selectedDestination.longitude, selectedDestination.latitude],
-        zoomLevel: 15,
-        animationDuration: 1500,
-        animationMode: "flyTo",
-      });
+      setFollowUser(false);
+      setDestination(selectedDestination);
       clearDestination();
 
       // Fire route optimization in background
@@ -100,12 +97,27 @@ export default function Home() {
     }
   }, [selectedDestination]);
 
+  useEffect(() => {
+    if (destination && !showRoutes) {
+      setTimeout(() => {
+        cameraRef.current?.setCamera({
+          centerCoordinate: [destination.longitude, destination.latitude],
+          zoomLevel: 15,
+          animationDuration: 1500,
+          animationMode: "flyTo",
+        });
+      }, 500);
+    }
+  }, [destination, showRoutes]);
+
   // Fit camera to route bounds when showing routes
   useEffect(() => {
     if (!showRoutes || !routeData?.routeGeometries?.length) return;
 
-    let minLng = Infinity, maxLng = -Infinity;
-    let minLat = Infinity, maxLat = -Infinity;
+    let minLng = Infinity,
+      maxLng = -Infinity;
+    let minLat = Infinity,
+      maxLat = -Infinity;
 
     for (const geo of routeData.routeGeometries) {
       if (!geo.geometry?.coordinates) continue;
@@ -123,7 +135,7 @@ export default function Home() {
       [maxLng, maxLat],
       [minLng, minLat],
       [60, 60, 300, 60],
-      1500
+      1500,
     );
   }, [showRoutes, routeData]);
 
@@ -205,7 +217,7 @@ export default function Home() {
       >
         <MapboxGL.Camera
           ref={cameraRef}
-          followUserLocation={followUser}
+          followUserLocation={followUser && !destination}
           followZoomLevel={14}
           animationMode="flyTo"
           animationDuration={1000}
@@ -226,33 +238,35 @@ export default function Home() {
             color: colors.primary,
           }}
         />
-        {destination && (
-          <DestinationMarker destination={destination} />
-        )}
-        {showRoutes && sortedGeometries.map((geo) => {
-          const isSelected = geo.routeId === selectedRouteId;
-          return (
-            <MapboxGL.ShapeSource
-              key={`${geo.routeId}-${isSelected}`}
-              id={`route-${geo.routeId}-${isSelected}`}
-              shape={geo.geometry}
-            >
-              <MapboxGL.LineLayer
-                id={`line-${geo.routeId}-${isSelected}`}
-                style={{
-                  lineColor: isSelected ? colors.primary : colors.inactive,
-                  lineWidth: isSelected ? 6 : 3,
-                  lineOpacity: isSelected ? 1 : 0.5,
-                  lineCap: "round",
-                  lineJoin: "round",
-                }}
-              />
-            </MapboxGL.ShapeSource>
-          );
-        })}
+        {destination && <DestinationMarker destination={destination} />}
+        {showRoutes &&
+          sortedGeometries.map((geo) => {
+            const isSelected = geo.routeId === selectedRouteId;
+            return (
+              <MapboxGL.ShapeSource
+                key={`${geo.routeId}-${isSelected}`}
+                id={`route-${geo.routeId}-${isSelected}`}
+                shape={geo.geometry}
+              >
+                <MapboxGL.LineLayer
+                  id={`line-${geo.routeId}-${isSelected}`}
+                  style={{
+                    lineColor: isSelected ? colors.primary : colors.inactive,
+                    lineWidth: isSelected ? 6 : 3,
+                    lineOpacity: isSelected ? 1 : 0.5,
+                    lineCap: "round",
+                    lineJoin: "round",
+                  }}
+                />
+              </MapboxGL.ShapeSource>
+            );
+          })}
       </MapboxGL.MapView>
 
-      <MapControls onRecenter={handleRecenter} onCycleStyle={handleCycleStyle} />
+      <MapControls
+        onRecenter={handleRecenter}
+        onCycleStyle={handleCycleStyle}
+      />
       <StreakBadge count={streak} />
 
       <BottomSheet
