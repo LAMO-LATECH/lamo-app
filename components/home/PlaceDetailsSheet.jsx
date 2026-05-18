@@ -1,8 +1,8 @@
 import { View, Text, StyleSheet, Pressable, Share, ActivityIndicator, Linking } from "react-native";
 import { BottomSheetView } from "@gorhom/bottom-sheet";
-import { ShareNetwork, BookmarkSimple, NavigationArrow, X, MapPin, Phone, Globe, Clock } from "phosphor-react-native";
+import { ShareNetwork, BookmarkSimple, NavigationArrow, X, Phone, Globe, Clock } from "phosphor-react-native";
 import { useState } from "react";
-import { spacing, radius, typography } from "../../constants/Tokens";
+import { spacing, radius, typography, iconSize } from "../../constants/Tokens";
 import { useTheme } from "../../contexts/ThemeContext";
 import { createDestination } from "../../services/destinationService";
 
@@ -54,7 +54,7 @@ export default function PlaceDetailsSheet({ destination, onDirections, onDismiss
   return (
     <BottomSheetView style={styles.container}>
       <Pressable style={styles.closeButton} onPress={onDismiss} hitSlop={12}>
-        <X size={20} color={colors.textSecondary} />
+        <X size={20} color={colors.inactive} />
       </Pressable>
 
       {/* Place header */}
@@ -69,19 +69,19 @@ export default function PlaceDetailsSheet({ destination, onDirections, onDismiss
       {/* Action buttons row */}
       <View style={styles.actions}>
         <Pressable style={styles.actionButton} onPress={onDirections}>
-          <View style={[styles.iconCircle, { backgroundColor: colors.primary }]}>
+          <View style={[styles.iconSquare, { backgroundColor: colors.primary }]}>
             {routeLoading ? (
               <ActivityIndicator size="small" color="#ffffff" />
             ) : (
-              <NavigationArrow size={20} color="#ffffff" weight="fill" />
+              <NavigationArrow size={iconSize.sm} color="#ffffff" weight="fill" />
             )}
           </View>
           <Text style={styles.actionLabel}>Directions</Text>
         </Pressable>
 
         <Pressable style={styles.actionButton} onPress={handleSave} disabled={saved}>
-          <View style={[styles.iconCircle, { backgroundColor: saved ? colors.primary + "20" : colors.surfaceAlt }]}>
-            <BookmarkSimple size={20} color={saved ? colors.primary : colors.text} weight={saved ? "fill" : "regular"} />
+          <View style={[styles.iconSquare, { backgroundColor: saved ? colors.primary + "20" : colors.surfaceDark }]}>
+            <BookmarkSimple size={iconSize.sm} color={saved ? colors.primary : colors.accent} weight={saved ? "fill" : "fill"} />
           </View>
           <Text style={[styles.actionLabel, saved && { color: colors.primary }]}>
             {saved ? "Saved" : "Save"}
@@ -89,16 +89,16 @@ export default function PlaceDetailsSheet({ destination, onDirections, onDismiss
         </Pressable>
 
         <Pressable style={styles.actionButton} onPress={handleShare}>
-          <View style={[styles.iconCircle, { backgroundColor: colors.surfaceAlt }]}>
-            <ShareNetwork size={20} color={colors.text} />
+          <View style={[styles.iconSquare, { backgroundColor: colors.surfaceDark }]}>
+            <ShareNetwork size={iconSize.sm} color={colors.accent} weight="fill" />
           </View>
           <Text style={styles.actionLabel}>Share</Text>
         </Pressable>
 
         {destination.phone && (
           <Pressable style={styles.actionButton} onPress={handleCall}>
-            <View style={[styles.iconCircle, { backgroundColor: colors.surfaceAlt }]}>
-              <Phone size={20} color={colors.text} />
+            <View style={[styles.iconSquare, { backgroundColor: colors.surfaceDark }]}>
+              <Phone size={iconSize.sm} color={colors.accent} weight="fill" />
             </View>
             <Text style={styles.actionLabel}>Call</Text>
           </Pressable>
@@ -110,7 +110,7 @@ export default function PlaceDetailsSheet({ destination, onDirections, onDismiss
         <View style={styles.infoSection}>
           {destination.openHours && (
             <View style={styles.infoRow}>
-              <Clock size={18} color={colors.textSecondary} />
+              <Clock size={18} color={colors.inactive} />
               <Text style={styles.infoText} numberOfLines={1}>
                 {typeof destination.openHours === "string"
                   ? destination.openHours
@@ -120,13 +120,13 @@ export default function PlaceDetailsSheet({ destination, onDirections, onDismiss
           )}
           {destination.phone && (
             <View style={styles.infoRow}>
-              <Phone size={18} color={colors.textSecondary} />
+              <Phone size={18} color={colors.inactive} />
               <Text style={styles.infoText}>{destination.phone}</Text>
             </View>
           )}
           {destination.website && (
             <Pressable style={styles.infoRow} onPress={handleWebsite}>
-              <Globe size={18} color={colors.textSecondary} />
+              <Globe size={18} color={colors.inactive} />
               <Text style={[styles.infoText, { color: colors.primary }]} numberOfLines={1}>
                 {destination.website.replace(/^https?:\/\/(www\.)?/, "")}
               </Text>
@@ -166,7 +166,7 @@ const createStyles = (colors) =>
     },
     address: {
       ...typography.bodySmall,
-      color: colors.textSecondary,
+      color: colors.inactive,
     },
     actions: {
       flexDirection: "row",
@@ -175,12 +175,12 @@ const createStyles = (colors) =>
     },
     actionButton: {
       alignItems: "center",
-      gap: spacing.sm,
+      gap: spacing.xs,
     },
-    iconCircle: {
+    iconSquare: {
       width: 48,
       height: 48,
-      borderRadius: radius.full,
+      borderRadius: radius.sm,
       alignItems: "center",
       justifyContent: "center",
     },
