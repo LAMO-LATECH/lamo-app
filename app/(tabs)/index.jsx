@@ -12,6 +12,8 @@ import MapControls from "../../components/home/MapControls";
 import StreakBadge from "../../components/home/StreakBadge";
 import BottomSheetContent from "../../components/home/BottomSheetContent";
 import RouteBottomSheet from "../../components/home/RouteBottomSheet";
+import PlaceDetailsSheet from "../../components/home/PlaceDetailsSheet";
+import DestinationMarker from "../../components/home/DestinationMarker";
 import { shadow } from "../../constants/Tokens";
 import { useTheme } from "../../contexts/ThemeContext";
 
@@ -43,6 +45,8 @@ export default function Home() {
   const [selectedRouteId, setSelectedRouteId] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
   const [streak, setStreak] = useState(0);
+  const [routeLoading, setRouteLoading] = useState(false);
+  const [showRoutes, setShowRoutes] = useState(false);
 
   useEffect(() => {
     getMe()
@@ -69,6 +73,7 @@ export default function Home() {
     if (selectedDestination) {
       setDestination(selectedDestination);
       setFollowUser(false);
+      setShowRoutes(false);
       cameraRef.current?.setCamera({
         centerCoordinate: [selectedDestination.longitude, selectedDestination.latitude],
         zoomLevel: 15,
@@ -77,6 +82,8 @@ export default function Home() {
       });
       clearDestination();
 
+      // Fire route optimization in background
+      setRouteLoading(true);
       optimizeRoute({
         from: userLocation
           ? `${userLocation.longitude},${userLocation.latitude}`
@@ -88,13 +95,14 @@ export default function Home() {
           setRouteData(res.result);
           setSelectedRouteId(res.result.recommendedRouteId);
         })
-        .catch((err) => console.error("Optimize error:", err));
+        .catch((err) => console.error("Optimize error:", err))
+        .finally(() => setRouteLoading(false));
     }
   }, [selectedDestination]);
 
-  // Fit camera to route bounds when route data arrives
+  // Fit camera to route bounds when showing routes
   useEffect(() => {
-    if (!routeData?.routeGeometries?.length) return;
+    if (!showRoutes || !routeData?.routeGeometries?.length) return;
 
     let minLng = Infinity, maxLng = -Infinity;
     let minLat = Infinity, maxLat = -Infinity;
@@ -117,7 +125,7 @@ export default function Home() {
       [60, 60, 300, 60],
       1500
     );
-  }, [routeData]);
+  }, [showRoutes, routeData]);
 
   const handleRecenter = useCallback(() => {
     setFollowUser(true);
@@ -130,11 +138,20 @@ export default function Home() {
     });
   }, [mapStyles]);
 
-  const handleClearRoutes = useCallback(() => {
+  const handleDismiss = useCallback(() => {
     setRouteData(null);
     setSelectedRouteId(null);
     setDestination(null);
+    setShowRoutes(false);
     setFollowUser(true);
+  }, []);
+
+  const handleShowDirections = useCallback(() => {
+    setShowRoutes(true);
+  }, []);
+
+  const handleBackToDetails = useCallback(() => {
+    setShowRoutes(false);
   }, []);
 
   // Sort route geometries so selected route renders last (on top)
@@ -149,6 +166,32 @@ export default function Home() {
         return 0;
       });
   }, [routeData, selectedRouteId]);
+
+  // Determine bottom sheet content
+  const renderSheetContent = () => {
+    if (destination && showRoutes && routeData) {
+      return (
+        <RouteBottomSheet
+          routeData={routeData}
+          selectedRouteId={selectedRouteId}
+          onSelectRoute={setSelectedRouteId}
+          onClose={handleDismiss}
+          onBack={handleBackToDetails}
+        />
+      );
+    }
+    if (destination && !showRoutes) {
+      return (
+        <PlaceDetailsSheet
+          destination={destination}
+          onDirections={handleShowDirections}
+          onDismiss={handleDismiss}
+          routeLoading={routeLoading}
+        />
+      );
+    }
+    return <BottomSheetContent />;
+  };
 
   return (
     <GestureHandlerRootView style={styles.fill}>
@@ -183,14 +226,10 @@ export default function Home() {
             color: colors.primary,
           }}
         />
-        {destination && !routeData && (
-          <MapboxGL.PointAnnotation
-            id="destination"
-            coordinate={[destination.longitude, destination.latitude]}
-            title={destination.name}
-          />
+        {destination && (
+          <DestinationMarker destination={destination} />
         )}
-        {sortedGeometries.map((geo) => {
+        {showRoutes && sortedGeometries.map((geo) => {
           const isSelected = geo.routeId === selectedRouteId;
           return (
             <MapboxGL.ShapeSource
@@ -220,20 +259,11 @@ export default function Home() {
         ref={bottomSheetRef}
         index={0}
         snapPoints={snapPoints}
-        enablePanDownToClose={!routeData}
+        enablePanDownToClose={!destination}
         backgroundStyle={styles.sheetBackground}
         handleIndicatorStyle={styles.handleIndicator}
       >
-        {routeData ? (
-          <RouteBottomSheet
-            routeData={routeData}
-            selectedRouteId={selectedRouteId}
-            onSelectRoute={setSelectedRouteId}
-            onClose={handleClearRoutes}
-          />
-        ) : (
-          <BottomSheetContent />
-        )}
+        {renderSheetContent()}
       </BottomSheet>
     </GestureHandlerRootView>
   );

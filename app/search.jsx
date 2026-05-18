@@ -28,9 +28,13 @@ export default function SearchScreen() {
     if (place) {
       selectDestination({
         name: place.name,
-        address: place.fullAddress,
+        fullAddress: place.fullAddress,
         latitude: place.coordinates.latitude,
         longitude: place.coordinates.longitude,
+        category: place.category,
+        phone: place.phone,
+        website: place.website,
+        openHours: place.openHours,
       });
       router.back();
     }

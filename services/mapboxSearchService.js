@@ -64,16 +64,19 @@ export async function retrievePlace(mapboxId) {
   if (!feature) throw new Error("No place found");
 
   const [longitude, latitude] = feature.geometry.coordinates;
+  const props = feature.properties;
+  const metadata = props.metadata ?? {};
 
   resetSessionToken();
 
   return {
     mapboxId,
-    name: feature.properties.name,
-    fullAddress:
-      feature.properties.full_address ??
-      feature.properties.place_formatted ??
-      "",
+    name: props.name,
+    fullAddress: props.full_address ?? props.place_formatted ?? "",
     coordinates: { latitude, longitude },
+    category: props.poi_category_ids?.[0] ?? props.poi_category ?? null,
+    phone: metadata.phone ?? null,
+    website: metadata.website ?? null,
+    openHours: metadata.open_hours ?? null,
   };
 }
