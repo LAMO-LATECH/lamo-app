@@ -10,7 +10,13 @@ import {
   Alert,
 } from "react-native";
 import { useAuth } from "../../contexts/AuthContext";
-import { fonts, spacing, radius, typography } from "../../constants/Tokens";
+import {
+  fonts,
+  spacing,
+  radius,
+  typography,
+  iconSize,
+} from "../../constants/Tokens";
 import { getMe, updateMe } from "../../services/userService";
 import { useState, useEffect } from "react";
 import { router } from "expo-router";
@@ -20,6 +26,9 @@ import {
   Clock,
   GearSix,
   CaretRight,
+  Star,
+  Fire,
+  Car,
 } from "phosphor-react-native";
 import { useTheme } from "../../contexts/ThemeContext";
 
@@ -96,20 +105,47 @@ const Profile = () => {
             </Text>
           </View>
 
-          <View style={styles.statsContainer}>
-            <View style={styles.statCard}>
-              <Text style={styles.statNumber}>{user?.points ?? 0}</Text>
-              <Text style={styles.statLabel}>Total Points</Text>
+          <View style={styles.impactCard}>
+            <Text style={styles.impactHeader}>Your Impact</Text>
+
+            <View style={styles.impactRow}>
+              <View style={styles.pointsCard}>
+                <View style={styles.statTopRow}>
+                  <Star size={iconSize.sm} weight="fill" color="#FFFFFF" />
+                  <Text style={styles.impactStatNumberLight}>
+                    {(user?.points ?? 0).toLocaleString()}
+                  </Text>
+                </View>
+                <Text style={styles.impactStatLabelLight}>
+                  Total points earned
+                </Text>
+              </View>
+
+              <View style={styles.streakCard}>
+                <View style={styles.statTopRow}>
+                  <Fire
+                    size={iconSize.sm}
+                    weight="fill"
+                    color={colors.primary}
+                  />
+                  <Text style={styles.impactStatNumber}>
+                    {user?.streak ?? 0}
+                  </Text>
+                </View>
+                <Text style={styles.impactStatLabel}>Best streak</Text>
+              </View>
             </View>
 
-            <View style={styles.statCard}>
-              <Text style={styles.statNumber}>{user?.streak ?? 0}</Text>
-              <Text style={styles.statLabel}>Best Streak</Text>
-            </View>
-
-            <View style={styles.statCardWide}>
-              <Text style={styles.statNumber}>{user?.routesAccepted ?? 0}</Text>
-              <Text style={styles.statLabel}>Smart Routes</Text>
+            <View style={styles.smartRoutesRow}>
+              <Car size={iconSize.md} weight="fill" color={colors.primary} />
+              <View>
+                <Text style={styles.smartRoutesNumber}>
+                  {user?.routesAccepted ?? 0} smart routes
+                </Text>
+                <Text style={styles.smartRoutesSub}>
+                  Helped reduce LA traffic
+                </Text>
+              </View>
             </View>
           </View>
 
@@ -236,35 +272,85 @@ const createStyles = (colors) =>
       fontFamily: fonts.semiBold,
       color: colors.accent,
     },
-    statsContainer: {
+    impactCard: {
       width: "100%",
       marginTop: 28,
-      flexDirection: "row",
-      flexWrap: "wrap",
+      backgroundColor: colors.surface,
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: radius.md,
+      padding: spacing.lg,
       gap: spacing.md,
-      justifyContent: "center",
     },
-    statCard: {
-      width: "48%",
-      backgroundColor: colors.surface,
-      borderWidth: 1,
-      borderColor: colors.border,
-      borderRadius: radius.md,
-      paddingVertical: 22,
+    impactHeader: {
+      fontSize: typography.caption.fontSize,
+      fontFamily: fonts.semiBold,
+      color: colors.text,
+      opacity: 0.5,
+      textTransform: "uppercase",
+      letterSpacing: 0.8,
+    },
+    impactRow: {
+      flexDirection: "row",
+      gap: spacing.md,
+    },
+    statTopRow: {
+      flexDirection: "row",
       alignItems: "center",
+      gap: spacing.xs,
     },
-    statCardWide: {
-      width: "60%",
-      backgroundColor: colors.surface,
-      borderWidth: 1,
-      borderColor: colors.border,
-      borderRadius: radius.md,
-      paddingVertical: 22,
-      alignItems: "center",
+    pointsCard: {
+      backgroundColor: colors.primary,
+      borderRadius: radius.sm,
+      padding: spacing.lg,
+      gap: 4,
     },
-    statNumber: {
-      fontSize: 20,
+    streakCard: {
+      flex: 1,
+      backgroundColor: colors.surfaceAlt,
+      borderRadius: radius.sm,
+      padding: spacing.lg,
+      gap: 4,
+    },
+    impactStatNumberLight: {
+      fontSize: 22,
       fontFamily: fonts.bold,
+      color: "#FFFFFF",
+    },
+    impactStatLabelLight: {
+      fontSize: typography.caption.fontSize,
+      fontFamily: fonts.regular,
+      color: "#FFFFFF",
+      opacity: 0.85,
+    },
+    impactStatNumber: {
+      fontSize: 22,
+      fontFamily: fonts.bold,
+      color: colors.text,
+    },
+    impactStatLabel: {
+      fontSize: typography.caption.fontSize,
+      fontFamily: fonts.regular,
+      color: colors.text,
+      opacity: 0.6,
+    },
+    smartRoutesRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: spacing.md,
+      backgroundColor: colors.surfaceAlt,
+      borderRadius: radius.sm,
+      paddingVertical: spacing.md,
+      paddingHorizontal: spacing.lg,
+    },
+    smartRoutesNumber: {
+      fontSize: typography.body.fontSize,
+      fontFamily: fonts.bold,
+      color: colors.text,
+    },
+    smartRoutesSub: {
+      fontSize: typography.caption.fontSize,
+      fontFamily: fonts.regular,
       color: colors.text,
       opacity: 0.6,
     },
