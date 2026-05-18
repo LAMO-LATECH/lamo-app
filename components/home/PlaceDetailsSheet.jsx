@@ -54,7 +54,7 @@ export default function PlaceDetailsSheet({ destination, onDirections, onDismiss
   return (
     <BottomSheetView style={styles.container}>
       <Pressable style={styles.closeButton} onPress={onDismiss} hitSlop={12}>
-        <X size={20} color={colors.inactive} />
+        <X size={24} color={colors.text} />
       </Pressable>
 
       {/* Place header */}

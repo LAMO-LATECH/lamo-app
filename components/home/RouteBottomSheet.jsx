@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
-import { ArrowLeft, Lightning } from "phosphor-react-native";
+import { ArrowLeft, Lightning, X } from "phosphor-react-native";
 import { spacing, radius, typography } from "../../constants/Tokens";
 import RouteCard from "./RouteCard";
 import { useTheme } from "../../contexts/ThemeContext";
@@ -25,6 +25,9 @@ export default function RouteBottomSheet({ routeData, selectedRouteId, onSelectR
           <ArrowLeft size={24} color={colors.text} />
         </Pressable>
         <Text style={styles.title}>Routes</Text>
+        <Pressable onPress={onClose} hitSlop={12} style={styles.closeButton}>
+          <X size={24} color={colors.text} />
+        </Pressable>
       </View>
 
       {nudgeMessage && (
@@ -64,6 +67,9 @@ const createStyles = (colors) =>
       flexDirection: "row",
       alignItems: "center",
       gap: spacing.md,
+    },
+    closeButton: {
+      marginLeft: "auto",
     },
     title: {
       fontSize: 20,
