@@ -123,11 +123,7 @@ const Profile = () => {
 
               <View style={styles.streakCard}>
                 <View style={styles.statTopRow}>
-                  <Fire
-                    size={iconSize.sm}
-                    weight="fill"
-                    color={colors.primary}
-                  />
+                  <Fire size={iconSize.sm} weight="fill" color={"#FF746C"} />
                   <Text style={styles.impactStatNumber}>
                     {user?.streak ?? 0}
                   </Text>
@@ -137,7 +133,7 @@ const Profile = () => {
             </View>
 
             <View style={styles.smartRoutesRow}>
-              <Car size={iconSize.md} weight="fill" color={colors.primary} />
+              <Car size={iconSize.md} weight="fill" color={"#7b9e6b"} />
               <View>
                 <Text style={styles.smartRoutesNumber}>
                   {user?.routesAccepted ?? 0} smart routes
