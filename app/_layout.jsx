@@ -51,6 +51,7 @@ function RootNavigator() {
         <Stack.Screen name="(tabs)" redirect={!isAuthenticated} />
         <Stack.Screen name="(auth)" redirect={isAuthenticated} />
         <Stack.Screen name="username" />
+        <Stack.Screen name="routeComplete" />
         <Stack.Screen
           name="settings"
           options={{ headerShown: false, title: "Settings" }}
