@@ -47,7 +47,7 @@ function RootNavigator() {
     <View style={{ flex: 1, backgroundColor: colors.background }}>
       <StatusBar style={isDark ? "light" : "dark"} />
       <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="/rideHistory" />
+        <Stack.Screen name="rideHistory" />
         <Stack.Screen name="(tabs)" redirect={!isAuthenticated} />
         <Stack.Screen name="(auth)" redirect={isAuthenticated} />
         <Stack.Screen name="username" />
