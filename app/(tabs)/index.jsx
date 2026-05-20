@@ -4,16 +4,21 @@ import MapboxGL from "@rnmapbox/maps";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigation } from "expo-router";
+import { router } from "expo-router";
 import { useDestination } from "../../contexts/DestinationContext";
 import { useAuth } from "../../contexts/AuthContext";
 import { getMe } from "../../services/userService";
 import { optimizeRoute } from "../../services/optimizeService";
+import { fetchDirections } from "../../services/mapboxDirectionsService";
+import useNavigationTracking from "../../hooks/useNavigation";
 import MapControls from "../../components/home/MapControls";
 import StreakBadge from "../../components/home/StreakBadge";
 import BottomSheetContent from "../../components/home/BottomSheetContent";
 import RouteBottomSheet from "../../components/home/RouteBottomSheet";
 import PlaceDetailsSheet from "../../components/home/PlaceDetailsSheet";
 import DestinationMarker from "../../components/home/DestinationMarker";
+import NavigationTopBanner from "../../components/home/NavigationTopBanner";
+import NavigationBottomPanel from "../../components/home/NavigationBottomPanel";
 import { shadow } from "../../constants/Tokens";
 import { useTheme } from "../../contexts/ThemeContext";
 
@@ -50,6 +55,24 @@ export default function Home() {
   const [streak, setStreak] = useState(0);
   const [routeLoading, setRouteLoading] = useState(false);
   const [showRoutes, setShowRoutes] = useState(false);
+  const [directionsData, setDirectionsData] = useState(null);
+
+  const {
+    navStatus,
+    currentStep,
+    distanceToNextStep,
+    totalDistanceRemaining,
+    totalDurationRemaining,
+    eta,
+    startNavigation,
+    endNavigation,
+  } = useNavigationTracking({
+    userLocation,
+    destination,
+    directionsData,
+  });
+
+  const isNavigating = navStatus === "NAVIGATING";
 
   useEffect(() => {
     getMe()
@@ -98,7 +121,7 @@ export default function Home() {
   }, [selectedDestination]);
 
   useEffect(() => {
-    if (destination && !showRoutes) {
+    if (destination && !showRoutes && !isNavigating) {
       setTimeout(() => {
         cameraRef.current?.setCamera({
           centerCoordinate: [destination.longitude, destination.latitude],
@@ -108,7 +131,7 @@ export default function Home() {
         });
       }, 500);
     }
-  }, [destination, showRoutes]);
+  }, [destination, showRoutes, isNavigating]);
 
   // Fit camera to route bounds when showing routes
   useEffect(() => {
@@ -139,6 +162,19 @@ export default function Home() {
     );
   }, [showRoutes, routeData]);
 
+  // Auto-arrive: navigate to routeComplete
+  useEffect(() => {
+    if (navStatus === "ARRIVED") {
+      endNavigation();
+      setDirectionsData(null);
+      setRouteData(null);
+      setSelectedRouteId(null);
+      setDestination(null);
+      setShowRoutes(false);
+      router.replace("/routeComplete");
+    }
+  }, [navStatus]);
+
   const handleRecenter = useCallback(() => {
     setFollowUser(true);
   }, []);
@@ -166,6 +202,61 @@ export default function Home() {
     setShowRoutes(false);
   }, []);
 
+  const handleStartNavigation = useCallback(async () => {
+    if (!userLocation || !destination) return;
+
+    try {
+      const directions = await fetchDirections(userLocation, destination);
+      setDirectionsData(directions);
+      startNavigation();
+      setFollowUser(true);
+    } catch (err) {
+      console.error("Failed to fetch directions:", err);
+    }
+  }, [userLocation, destination, startNavigation]);
+
+  const handleEndNavigation = useCallback(() => {
+    // Check if user is within 500m of destination
+    if (userLocation && destination) {
+      const toRad = (deg) => (deg * Math.PI) / 180;
+      const R = 6371000;
+      const dLat = toRad(destination.latitude - userLocation.latitude);
+      const dLon = toRad(destination.longitude - userLocation.longitude);
+      const a =
+        Math.sin(dLat / 2) ** 2 +
+        Math.cos(toRad(userLocation.latitude)) *
+          Math.cos(toRad(destination.latitude)) *
+          Math.sin(dLon / 2) ** 2;
+      const dist = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+      if (dist < 500) {
+        endNavigation();
+        setDirectionsData(null);
+        setRouteData(null);
+        setSelectedRouteId(null);
+        setDestination(null);
+        setShowRoutes(false);
+        router.replace("/routeComplete");
+        return;
+      }
+    }
+
+    // Far from destination — just dismiss
+    endNavigation();
+    setDirectionsData(null);
+    setRouteData(null);
+    setSelectedRouteId(null);
+    setDestination(null);
+    setShowRoutes(false);
+    setFollowUser(true);
+  }, [userLocation, destination, endNavigation]);
+
+  const selectedRoutePoints = useMemo(() => {
+    if (!routeData?.routeOptions || !selectedRouteId) return 0;
+    const route = routeData.routeOptions.find((r) => r.routeId === selectedRouteId);
+    return route?.pointsEarned ?? 0;
+  }, [routeData, selectedRouteId]);
+
   // Sort route geometries so selected route renders last (on top)
   const sortedGeometries = useMemo(() => {
     if (!routeData?.routeGeometries) return [];
@@ -189,6 +280,7 @@ export default function Home() {
           onSelectRoute={setSelectedRouteId}
           onClose={handleDismiss}
           onBack={handleBackToDetails}
+          onStart={handleStartNavigation}
         />
       );
     }
@@ -213,12 +305,17 @@ export default function Home() {
         logoEnabled={false}
         attributionEnabled={false}
         scaleBarEnabled={false}
-        onTouchStart={() => setFollowUser(false)}
+        onTouchStart={() => {
+          if (!isNavigating) setFollowUser(false);
+        }}
       >
         <MapboxGL.Camera
           ref={cameraRef}
-          followUserLocation={followUser && !destination}
-          followZoomLevel={14}
+          followUserLocation={isNavigating ? true : followUser && !destination}
+          followZoomLevel={isNavigating ? 16 : 14}
+          followPitch={isNavigating ? 45 : 0}
+          followHeading={isNavigating ? undefined : undefined}
+          followUserMode={isNavigating ? "course" : undefined}
           animationMode="flyTo"
           animationDuration={1000}
         />
@@ -239,7 +336,26 @@ export default function Home() {
           }}
         />
         {destination && <DestinationMarker destination={destination} />}
-        {showRoutes &&
+
+        {/* Navigation route line from Mapbox Directions */}
+        {isNavigating && directionsData?.geometry && (
+          <MapboxGL.ShapeSource id="nav-route" shape={directionsData.geometry}>
+            <MapboxGL.LineLayer
+              id="nav-route-line"
+              style={{
+                lineColor: colors.primary,
+                lineWidth: 6,
+                lineOpacity: 1,
+                lineCap: "round",
+                lineJoin: "round",
+              }}
+            />
+          </MapboxGL.ShapeSource>
+        )}
+
+        {/* Route selection lines (non-navigation) */}
+        {!isNavigating &&
+          showRoutes &&
           sortedGeometries.map((geo) => {
             const isSelected = geo.routeId === selectedRouteId;
             return (
@@ -263,22 +379,43 @@ export default function Home() {
           })}
       </MapboxGL.MapView>
 
-      <MapControls
-        onRecenter={handleRecenter}
-        onCycleStyle={handleCycleStyle}
-      />
-      <StreakBadge count={streak} />
+      {!isNavigating && (
+        <>
+          <MapControls
+            onRecenter={handleRecenter}
+            onCycleStyle={handleCycleStyle}
+          />
+          <StreakBadge count={streak} />
 
-      <BottomSheet
-        ref={bottomSheetRef}
-        index={0}
-        snapPoints={snapPoints}
-        enablePanDownToClose={!destination}
-        backgroundStyle={styles.sheetBackground}
-        handleIndicatorStyle={styles.handleIndicator}
-      >
-        {renderSheetContent()}
-      </BottomSheet>
+          <BottomSheet
+            ref={bottomSheetRef}
+            index={0}
+            snapPoints={snapPoints}
+            enablePanDownToClose={!destination}
+            backgroundStyle={styles.sheetBackground}
+            handleIndicatorStyle={styles.handleIndicator}
+          >
+            {renderSheetContent()}
+          </BottomSheet>
+        </>
+      )}
+
+      {isNavigating && (
+        <>
+          <NavigationTopBanner
+            currentStep={currentStep}
+            distanceToNextStep={distanceToNextStep}
+          />
+          <NavigationBottomPanel
+            totalDurationRemaining={totalDurationRemaining}
+            totalDistanceRemaining={totalDistanceRemaining}
+            eta={eta}
+            streak={streak}
+            pointsEarned={selectedRoutePoints}
+            onEnd={handleEndNavigation}
+          />
+        </>
+      )}
     </GestureHandlerRootView>
   );
 }

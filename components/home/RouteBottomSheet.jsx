@@ -5,7 +5,7 @@ import { spacing, radius, typography } from "../../constants/Tokens";
 import RouteCard from "./RouteCard";
 import { useTheme } from "../../contexts/ThemeContext";
 
-export default function RouteBottomSheet({ routeData, selectedRouteId, onSelectRoute, onClose, onBack }) {
+export default function RouteBottomSheet({ routeData, selectedRouteId, onSelectRoute, onClose, onBack, onStart }) {
   const { colors } = useTheme();
   const styles = createStyles(colors);
   const { routeOptions, nudgeMessage, recommendedRouteId } = routeData;
@@ -49,7 +49,7 @@ export default function RouteBottomSheet({ routeData, selectedRouteId, onSelectR
         ))}
       </View>
 
-      <Pressable style={styles.startButton} onPress={() => console.log("Start")}>
+      <Pressable style={styles.startButton} onPress={onStart}>
         <Text style={styles.startText}>Start</Text>
       </Pressable>
     </BottomSheetScrollView>
